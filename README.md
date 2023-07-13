@@ -8,7 +8,7 @@
 [![star](https://gitee.com/twelvet/twelvet/badge/star.svg?theme=white)](https://gitee.com/twelvet/twelvet/stargazers)
 [![fork](https://gitee.com/twelvet/twelvet/badge/fork.svg?theme=white)](https://gitee.com/twelvet/twelvet/members)
 
-这是基于[twelvet](https://github.com/twelvet-s/twelvet)微服务脚手架的秒杀商城系统的React UI
+这是基于[twelvet](https://github.com/twelvet-s/twelvet)微服务脚手架的秒杀商城系统的 React UI
 
 ## TwelveT 微服务交流群
 
