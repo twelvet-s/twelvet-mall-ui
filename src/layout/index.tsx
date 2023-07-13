@@ -1,5 +1,6 @@
 import React from 'react'
 import {Layout as AntdLayout} from 'antd'
+import {Outlet} from 'react-router-dom'
 
 const {Header, Footer, Content} = AntdLayout
 
@@ -37,7 +38,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         }}>
             <Header style={headerStyle}>Header</Header>
             <Content style={contentStyle}>
-                <main>{children}</main>
+                <Outlet />
             </Content>
             <Footer style={footerStyle}>Footer</Footer>
         </div>
