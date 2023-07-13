@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Layout from '../layout'
+import Layout from '../Layout'
 import RouterPath from '../router'
 
 function Sider() {
