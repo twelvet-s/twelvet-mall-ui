@@ -1,41 +1,48 @@
-import React from 'react'
-import { Layout as AntdLayout } from 'antd'
+import React from "react";
+import { Layout as AntdLayout } from "antd";
 
-const { Header, Footer, Sider, Content } = AntdLayout
+const {
+  Header,
+  Footer,
+  Sider,
+  Content
+} = AntdLayout;
 
 const headerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  color: '#fff',
+  textAlign: "center",
+  color: "#fff",
   height: 64,
   paddingInline: 50,
-  lineHeight: '64px',
-  backgroundColor: '#7dbcea',
-}
+  lineHeight: "64px",
+  backgroundColor: "#7dbcea"
+};
 
 const contentStyle: React.CSSProperties = {
-  textAlign: 'center',
+  textAlign: "center",
   minHeight: 120,
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#108ee9',
-}
+  lineHeight: "120px",
+  color: "#fff",
+  backgroundColor: "#108ee9"
+};
 
 const siderStyle: React.CSSProperties = {
-  textAlign: 'center',
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#3ba0e9',
-}
+  textAlign: "center",
+  lineHeight: "120px",
+  color: "#fff",
+  backgroundColor: "#3ba0e9"
+};
 
 const footerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  color: '#fff',
-  backgroundColor: '#7dbcea',
-}
+  textAlign: "center",
+  color: "#fff",
+  backgroundColor: "#7dbcea"
+};
+
 interface LayoutProps {
-  children?: React.ReactNode
-  sider?: React.ReactNode
+  children?: React.ReactNode;
+  sider?: React.ReactNode;
 }
+
 const Layout: React.FC<LayoutProps> = ({ sider, children }) => {
   return (
     <div className="w-full h-full">
@@ -50,7 +57,7 @@ const Layout: React.FC<LayoutProps> = ({ sider, children }) => {
         <Footer style={footerStyle}>Footer</Footer>
       </AntdLayout>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
