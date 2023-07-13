@@ -31,7 +31,7 @@ interface LayoutProps {
     sider?: React.ReactNode
 }
 
-const Layout: React.FC<LayoutProps> = ({children}) => {
+const Layout: React.FC<LayoutProps> = () => {
     return (
         <div style={{
             width: '100vw',
