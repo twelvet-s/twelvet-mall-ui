@@ -109,8 +109,8 @@ const data = [
 const Home: React.FC = () => {
     return (
         <Row>
-            <Col lg={4} xs={1}></Col>
-            <Col lg={16} xs={22}>
+            <Col sm={4} xs={1}></Col>
+            <Col sm={16} xs={22}>
                 <Carousel className={'carousel'} autoplay>
 
                     <a target={'_blank'} href="/goods/detail">
@@ -171,7 +171,7 @@ const Home: React.FC = () => {
                     )}
                 />
             </Col>
-            <Col lg={4} xs={1}></Col>
+            <Col sm={4} xs={1}></Col>
         </Row>
     )
 }
