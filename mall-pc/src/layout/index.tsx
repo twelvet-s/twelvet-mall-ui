@@ -1,5 +1,5 @@
 import React from 'react'
-import {Outlet} from 'react-router-dom'
+import {Outlet, useNavigate} from 'react-router-dom'
 import {Col, Layout as AntdLayout, Menu, Row} from 'antd'
 import './index.css'
 import logo from '../assets/logo.svg'
@@ -7,6 +7,9 @@ import logo from '../assets/logo.svg'
 const {Header, Content, Footer} = AntdLayout;
 
 const Layout: React.FC = () => {
+
+    const navigate = useNavigate()
+
     return (
         <AntdLayout className="layout">
             <Header style={{display: 'flex', alignItems: 'center'}}>
@@ -18,6 +21,11 @@ const Layout: React.FC = () => {
                     theme="dark"
                     mode="horizontal"
                     defaultSelectedKeys={['home']}
+                    onClick={(e) => {
+                        if (e.key === 'home') {
+                            navigate('/')
+                        }
+                    }}
                     items={[
                         {
                             key: 'home',
