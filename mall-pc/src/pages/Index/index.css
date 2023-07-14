@@ -3,15 +3,32 @@
     width: 1200px;
 }
 
+.card:hover {
+    display: inline-block;
+    width: 100%;
+    box-shadow: 0 4px 40px 1px rgba(0, 0, 0, .1);
+    margin-top: -3px;
+}
+
 .product-list a {
     color: #000;
 }
 
-.card:hover {
+.product-list a > span {
     display: inline-block;
     width: 100%;
-    box-shadow: 0 4px 40px 1px rgba(0,0,0,.1);
-    margin-top: -3px;
+    height: 45px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#goods-price {
+    font-weight: bolder;
+    font-size: 16px;
+    color: #ff512b;
 }
 
 .product-list img {

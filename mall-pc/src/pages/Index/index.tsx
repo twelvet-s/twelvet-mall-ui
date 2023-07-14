@@ -6,82 +6,102 @@ const data = [
     {
         price: 91,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product-category/1111111%20(4).png',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 92,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product-category/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%92%8C%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 93,
         img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/4a194b70-0830-4686-8d45-3d30bce709d3.png',
+        desc: '  JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 94,
         img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/f202ad66-5d98-4f61-a071-a35f5afaf075.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 91,
         img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/5c48e84e-989c-4a70-b647-e4dfa69efbaf.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 92,
         img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/4a194b70-0830-4686-8d45-3d30bce709d3.png',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 93,
         img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/70a71721-f542-4bc5-a65a-24000bcce947.png',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 94,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productrBEhWlKb234IAAAAAAQe--TPULkAAGMcAB9W-wABB8T163.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 91,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01v6iIYJ2KcJrJ4xSX0_!!2211629699577.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 92,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product8288d649f0e94a73.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 93,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01zqy0wD1v5vPm9f7Xk_!!1614846122.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 94,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01Nhd52x1va9QmyfcIj_!!3446196188.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 91,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01Qfyp2r1rN5qW6ltfr_!!859515618.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 92,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN010A7WjS1CP1BmI67Qg-101450072.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 93,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productTB2MXsfyiOYBuNjSsD4XXbSkFXa_!!1614846122-0-item_pic.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 94,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01TWDMD41v5vCLOUNhs_!!0-item_pic.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 91,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN012lxjMG1v5vNZolfWL_!!0-item_pic.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 92,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productrBEhWlKb234IAAAAAAQe--TPULkAAGMcAB9W-wABB8T163.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 93,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product945e8503207dec67.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
     {
         price: 94,
         img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01i6wirP1v5vH1exCTz_!!1614846122.jpg_430x430q90.jpg',
+        desc: 'JavaScript百炼成仙 杨逸飞 JavaScript初学入门教材书JavaScript编程入门',
     },
 ];
 
@@ -128,9 +148,9 @@ const Home: React.FC = () => {
                                     src={item.img}
                                     alt=""/>
                                 <span>
-                                罗技MX Master2s无线蓝牙高端鼠标办公笔记本电脑可充电人体工学
-                            </span>
-                                <p>
+                                    {item.desc}
+                                </span>
+                                <p id={'goods-price'}>
                                     ¥ {item.price}
                                 </p>
                             </a>
