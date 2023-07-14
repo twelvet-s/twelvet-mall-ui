@@ -3,7 +3,12 @@ import type {RouteObject} from 'react-router-dom'
 
 const Layout = lazy(() => import('../layout'))
 const Index = lazy(() => import('../pages/Index'))
+
+// 商品
+const GoodsList = lazy(() => import('../pages/Goods/List'))
 const GoodsDetail = lazy(() => import('../pages/Goods/Detail'))
+
+
 const Test = lazy(() => import('../pages/Test.tsx'))
 
 const NotFound = lazy(() => import('../pages/Error/404.tsx'))
@@ -23,6 +28,11 @@ const routes: RouteObject[] = [
             {
                 index: true,
                 element: lazyLoad(<Index/>),
+            },
+            // 商品列表
+            {
+                path: '/goods/list',
+                element: lazyLoad(<GoodsList/>),
             },
             // 商品详情
             {

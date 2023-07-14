@@ -10,6 +10,17 @@ const Layout: React.FC = () => {
 
     const navigate = useNavigate()
 
+    const currentPath = location.pathname;
+
+    let defaultSelectedKey = '';
+
+    if (currentPath === '/') {
+        defaultSelectedKey = 'home'
+    } else if (currentPath === '/goods/list') {
+        defaultSelectedKey = 'goodsList'
+    }
+
+
     return (
         <AntdLayout className="layout">
             <Header style={{display: 'flex', alignItems: 'center'}}>
@@ -20,16 +31,22 @@ const Layout: React.FC = () => {
                 <Menu
                     theme="dark"
                     mode="horizontal"
-                    defaultSelectedKeys={['home']}
+                    defaultSelectedKeys={[defaultSelectedKey]}
                     onClick={(e) => {
                         if (e.key === 'home') {
                             navigate('/')
+                        } else if (e.key === 'goodsList') {
+                            navigate('/goods/list')
                         }
                     }}
                     items={[
                         {
                             key: 'home',
                             label: `首页`,
+                        },
+                        {
+                            key: 'goodsList',
+                            label: `商品列表`,
                         },
                     ]}
                 />
