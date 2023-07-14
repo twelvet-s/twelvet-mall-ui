@@ -36,7 +36,7 @@ const routes: RouteObject[] = [
         ]
     },
     {
-        path: '/about',
+        path: '/test',
         element: lazyLoad(<Test/>),
     },
     {
