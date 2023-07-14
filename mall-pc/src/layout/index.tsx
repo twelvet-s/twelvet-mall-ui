@@ -1,47 +1,36 @@
 import React from 'react'
-import {Layout as AntdLayout} from 'antd'
 import {Outlet} from 'react-router-dom'
+import {Layout as AntdLayout, Menu} from 'antd'
+import './index.css'
+import logo from '../assets/logo.svg'
 
-const {Header, Footer, Content} = AntdLayout
+const {Header, Content, Footer} = AntdLayout;
 
-const headerStyle: React.CSSProperties = {
-    width: '100vw',
-    textAlign: 'center',
-    color: '#fff',
-    height: 64,
-    paddingInline: 50,
-    backgroundColor: '#7dbcea',
-}
-
-const contentStyle: React.CSSProperties = {
-    textAlign: 'center',
-    minHeight: 120,
-    color: '#fff',
-    backgroundColor: '#108ee9',
-}
-
-const footerStyle: React.CSSProperties = {
-    textAlign: 'center',
-    color: '#fff',
-    backgroundColor: '#7dbcea',
-}
-
-interface LayoutProps {
-    children?: React.ReactNode
-    sider?: React.ReactNode
-}
-
-const Layout: React.FC<LayoutProps> = () => {
+const Layout: React.FC = () => {
     return (
-        <div style={{
-            width: '100vw',
-        }}>
-            <Header style={headerStyle}>Header</Header>
-            <Content style={contentStyle}>
-                <Outlet />
+        <AntdLayout className="layout">
+            <Header style={{display: 'flex', alignItems: 'center'}}>
+                <div className={'logo'}>
+                    <img src={logo} alt="logo"/>
+                    twelvet
+                </div>
+                <Menu
+                    theme="dark"
+                    mode="horizontal"
+                    defaultSelectedKeys={['home']}
+                    items={[
+                        {
+                            key: 'home',
+                            label: `首页`,
+                        },
+                    ]}
+                />
+            </Header>
+            <Content className={'ctn'}>
+                <Outlet/>
             </Content>
-            <Footer style={footerStyle}>Footer</Footer>
-        </div>
+            <Footer style={{textAlign: 'center'}}>twelvet mall ©2023 Created by twelvet</Footer>
+        </AntdLayout>
     )
 }
 
