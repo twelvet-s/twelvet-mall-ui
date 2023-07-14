@@ -154,8 +154,8 @@ const Home: React.FC = () => {
                     dataSource={data}
                     renderItem={(item) => (
                         <List.Item>
-                            <Card className={'card'}>
-                                <a target={'_blank'} href="/goods/detail">
+                            <a className={'card'} target={'_blank'} href="/goods/detail">
+                                <Card>
                                     <img
                                         src={item.img}
                                         alt=""/>
@@ -165,8 +165,8 @@ const Home: React.FC = () => {
                                     <p id={'goods-price'}>
                                         ¥ {item.price}
                                     </p>
-                                </a>
-                            </Card>
+                                </Card>
+                            </a>
                         </List.Item>
                     )}
                 />
