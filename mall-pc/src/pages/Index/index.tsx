@@ -1,5 +1,5 @@
 import React from 'react'
-import {Carousel, Card, List, Col, Row} from 'antd'
+import {Card, Carousel, List} from 'antd'
 
 import './index.css'
 
@@ -128,71 +128,68 @@ const data = [
 
 const Home: React.FC = () => {
     return (
-        <Row>
-            <Col sm={4} xs={1}></Col>
-            <Col sm={16} xs={22}>
-                <Carousel className={'carousel'} autoplay>
+        <>
+            <Carousel className={'carousel'} autoplay>
 
-                    <a target={'_blank'} href="/goods/detail">
-                        <img
-                            src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E7%89%9B%E5%A5%B6banner(1200).jpg"
-                            alt=""/>
-                    </a>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E7%89%9B%E5%A5%B6banner(1200).jpg"
+                        alt=""/>
+                </a>
 
-                    <a target={'_blank'} href="/goods/detail">
-                        <img
-                            src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E4%BA%BA%E4%BD%93%E5%B7%A5%E7%A8%8B%E6%A4%85banner(1200).jpg"
-                            alt=""/>
-                    </a>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E4%BA%BA%E4%BD%93%E5%B7%A5%E7%A8%8B%E6%A4%85banner(1200).jpg"
+                        alt=""/>
+                </a>
 
-                    <a target={'_blank'} href="/goods/detail">
-                        <img
-                            src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%8C%89%E6%91%A9%E5%99%A8banner(1200).jpg"
-                            alt=""/>
-                    </a>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%8C%89%E6%91%A9%E5%99%A8banner(1200).jpg"
+                        alt=""/>
+                </a>
 
-                    <a target={'_blank'} href="/goods/detail">
-                        <img
-                            src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-banner(1200).jpg"
-                            alt=""/>
-                    </a>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-banner(1200).jpg"
+                        alt=""/>
+                </a>
 
-                </Carousel>
+            </Carousel>
 
 
-                <List
-                    grid={{
-                        gutter: 16,
-                        xs: 1,
-                        sm: 2,
-                        md: 2,
-                        lg: 3,
-                        xl: 4,
-                        xxl: 4,
-                    }}
-                    className={'product-list'}
-                    dataSource={data}
-                    renderItem={(item) => (
-                        <List.Item>
-                            <a className={'card'} target={'_blank'} href={`/goods/detail/${item.goodsId}`}>
-                                <Card>
-                                    <img
-                                        src={item.img}
-                                        alt=""/>
-                                    <span>
+            <List
+                grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 2,
+                    md: 2,
+                    lg: 3,
+                    xl: 4,
+                    xxl: 4,
+                }}
+                className={'product-list'}
+                dataSource={data}
+                renderItem={(item) => (
+                    <List.Item>
+                        <a className={'card'} target={'_blank'} href={`/goods/detail/${item.goodsId}`}>
+                            <Card>
+                                <img
+                                    src={item.img}
+                                    alt=""/>
+                                <span>
                                     {item.desc}
                                 </span>
-                                    <p id={'goods-price'}>
-                                        ¥ {item.price}
-                                    </p>
-                                </Card>
-                            </a>
-                        </List.Item>
-                    )}
-                />
-            </Col>
-            <Col sm={4} xs={1}></Col>
-        </Row>
+                                <p id={'goods-price'}>
+                                    ¥ {item.price}
+                                </p>
+                            </Card>
+                        </a>
+                    </List.Item>
+                )}
+            />
+        </>
+
     )
 }
 

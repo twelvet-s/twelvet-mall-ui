@@ -1,5 +1,5 @@
 import React from 'react'
-import {Carousel, Card, List, Skeleton} from 'antd'
+import {Skeleton} from 'antd'
 import {useParams} from 'react-router-dom'
 import './index.css'
 
@@ -9,7 +9,11 @@ const GoodsDetail: React.FC = () => {
 
     alert(goodsId)
 
-    return (<Skeleton active/>)
+    return (
+        <>
+            <Skeleton active/>
+        </>
+    )
 }
 
 export default GoodsDetail

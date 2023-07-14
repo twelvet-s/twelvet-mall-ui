@@ -1,6 +1,6 @@
 import React from 'react'
 import {Outlet} from 'react-router-dom'
-import {Layout as AntdLayout, Menu} from 'antd'
+import {Col, Layout as AntdLayout, Menu, Row} from 'antd'
 import './index.css'
 import logo from '../assets/logo.svg'
 
@@ -26,8 +26,13 @@ const Layout: React.FC = () => {
                     ]}
                 />
             </Header>
-            <Content className={'ctn'}>
-                <Outlet/>
+            <Content>
+                <Row>
+                    <Col sm={4} xs={1}></Col>
+                    <Col sm={16} xs={22}>
+                        <Outlet/>
+                    </Col>
+                </Row>
             </Content>
             <Footer style={{textAlign: 'center'}}>twelvet mall ©2023 Created by twelvet</Footer>
         </AntdLayout>
