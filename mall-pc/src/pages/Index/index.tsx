@@ -5,63 +5,83 @@ import './index.css'
 const data = [
     {
         price: 91,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product-category/1111111%20(4).png',
     },
     {
         price: 92,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product-category/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%92%8C%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.jpg',
     },
     {
         price: 93,
+        img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/4a194b70-0830-4686-8d45-3d30bce709d3.png',
     },
     {
         price: 94,
+        img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/f202ad66-5d98-4f61-a071-a35f5afaf075.jpg',
     },
     {
         price: 91,
+        img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/5c48e84e-989c-4a70-b647-e4dfa69efbaf.jpg',
     },
     {
         price: 92,
+        img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/4a194b70-0830-4686-8d45-3d30bce709d3.png',
     },
     {
         price: 93,
+        img: 'https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/70a71721-f542-4bc5-a65a-24000bcce947.png',
     },
     {
         price: 94,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productrBEhWlKb234IAAAAAAQe--TPULkAAGMcAB9W-wABB8T163.jpg',
     },
     {
         price: 91,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01v6iIYJ2KcJrJ4xSX0_!!2211629699577.jpg_430x430q90.jpg',
     },
     {
         price: 92,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product8288d649f0e94a73.jpg',
     },
     {
         price: 93,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01zqy0wD1v5vPm9f7Xk_!!1614846122.jpg_430x430q90.jpg',
     },
     {
         price: 94,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01Nhd52x1va9QmyfcIj_!!3446196188.jpg_430x430q90.jpg',
     },
     {
         price: 91,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01Qfyp2r1rN5qW6ltfr_!!859515618.jpg_430x430q90.jpg',
     },
     {
         price: 92,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN010A7WjS1CP1BmI67Qg-101450072.jpg_430x430q90.jpg',
     },
     {
         price: 93,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productTB2MXsfyiOYBuNjSsD4XXbSkFXa_!!1614846122-0-item_pic.jpg_430x430q90.jpg',
     },
     {
         price: 94,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01TWDMD41v5vCLOUNhs_!!0-item_pic.jpg_430x430q90.jpg',
     },
     {
         price: 91,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN012lxjMG1v5vNZolfWL_!!0-item_pic.jpg_430x430q90.jpg',
     },
     {
         price: 92,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productrBEhWlKb234IAAAAAAQe--TPULkAAGMcAB9W-wABB8T163.jpg',
     },
     {
         price: 93,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/product945e8503207dec67.jpg',
     },
     {
         price: 94,
+        img: 'https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/mall-product/productO1CN01i6wirP1v5vH1exCTz_!!1614846122.jpg_430x430q90.jpg',
     },
 ];
 
@@ -70,21 +90,29 @@ const Home: React.FC = () => {
         <>
             <Carousel className={'carousel'} autoplay>
 
-                <img
-                    src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-banner(1200).jpg"
-                    alt=""/>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E7%89%9B%E5%A5%B6banner(1200).jpg"
+                        alt=""/>
+                </a>
 
-                <img
-                    src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-banner(1200).jpg"
-                    alt=""/>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E4%BA%BA%E4%BD%93%E5%B7%A5%E7%A8%8B%E6%A4%85banner(1200).jpg"
+                        alt=""/>
+                </a>
 
-                <img
-                    src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-banner(1200).jpg"
-                    alt=""/>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%8C%89%E6%91%A9%E5%99%A8banner(1200).jpg"
+                        alt=""/>
+                </a>
 
-                <img
-                    src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-banner(1200).jpg"
-                    alt=""/>
+                <a target={'_blank'} href="/goods/detail">
+                    <img
+                        src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/advertise/PC-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-banner(1200).jpg"
+                        alt=""/>
+                </a>
 
             </Carousel>
 
@@ -94,16 +122,18 @@ const Home: React.FC = () => {
                 dataSource={data}
                 renderItem={(item) => (
                     <List.Item>
-                        <Card>
-                            <img
-                                src="https://msb-edu-prod.oss-cn-beijing.aliyuncs.com/mall-product/product/bff78027-b936-45eb-b70e-c19071dc487c.jpg"
-                                alt=""/>
-                            <span>
+                        <Card className={'card'}>
+                            <a target={'_blank'} href="/goods/detail">
+                                <img
+                                    src={item.img}
+                                    alt=""/>
+                                <span>
                                 罗技MX Master2s无线蓝牙高端鼠标办公笔记本电脑可充电人体工学
                             </span>
-                            <p>
-                                ¥ {item.price}
-                            </p>
+                                <p>
+                                    ¥ {item.price}
+                                </p>
+                            </a>
                         </Card>
                     </List.Item>
                 )}
