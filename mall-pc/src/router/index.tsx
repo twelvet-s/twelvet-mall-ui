@@ -1,4 +1,4 @@
-import {lazy} from 'react'
+import {lazy, ReactNode, Suspense} from 'react'
 import type {RouteObject} from 'react-router-dom'
 
 const Layout = lazy(() => import('../layout'))
@@ -9,6 +9,12 @@ const Info = lazy(() => import('../pages/Info'))
 
 const NotFound = lazy(() => import('../pages/Error/404.tsx'))
 
+const lazyLoad = (children: ReactNode) => {
+    return <Suspense fallback={<>loading</>}>
+        {children}
+    </Suspense>
+}
+
 const routes: RouteObject[] = [
     {
         path: '/',
@@ -17,30 +23,30 @@ const routes: RouteObject[] = [
             // 首页
             {
                 index: true,
-                element: <Index/>,
+                element: lazyLoad(<Index/>),
             },
             // 商品详情
             {
                 path: '/goods/detail/:goodsId',
-                element: <GoodsDetail/>,
+                element: lazyLoad(<GoodsDetail/>),
             },
             {
                 path: '/about',
-                element: <About/>,
+                element: lazyLoad(<About/>),
             },
             {
                 path: '/info',
-                element: <Info/>,
+                element: lazyLoad(<Info/>),
             },
             {
                 path: '*',
-                element: <NotFound/>,
+                element: lazyLoad(<NotFound/>),
             },
         ]
     },
     {
         path: '*',
-        element: <NotFound/>,
+        element: lazyLoad(<NotFound/>),
     },
 ]
 
