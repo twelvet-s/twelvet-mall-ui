@@ -1,11 +1,23 @@
-.carousel img {
-    margin: 10px 10px;
-    width: 1200px;
+.ctn {
+    width: 100%;
+}
+
+.carousel {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.carousel a, .carousel img {
+    display: inline-block;
+    width: 100%;
+}
+
+.card {
+    width: 100%;
 }
 
 .card:hover {
-    display: inline-block;
-    width: 100%;
     box-shadow: 0 4px 40px 1px rgba(0, 0, 0, .1);
     margin-top: -3px;
 }

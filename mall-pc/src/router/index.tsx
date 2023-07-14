@@ -32,10 +32,6 @@ const routes: RouteObject[] = [
                 path: '/info',
                 element: <Info/>,
             },
-            {
-                path: '*',
-                element: <NotFound/>,
-            },
         ]
     },
     {
