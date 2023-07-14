@@ -21,7 +21,7 @@ const routes: RouteObject[] = [
             },
             // 商品详情
             {
-                path: '/goods/detail',
+                path: '/goods/detail/:goodsId',
                 element: <GoodsDetail/>,
             },
             {
