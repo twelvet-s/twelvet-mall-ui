@@ -10,6 +10,10 @@
 
 这是基于[twelvet](https://github.com/twelvet-s/twelvet)微服务脚手架的秒杀商城系统的 React UI
 
+后端源码：https://github.com/twelvet-s/twelvet-mall
+
+前端源码：https://github.com/twelvet-s/twelvet-mall-ui
+
 ## TwelveT 微服务交流群
 
 QQ 群： [![加入QQ群](https://img.shields.io/badge/985830229-blue.svg)](https://jq.qq.com/?_wv=1027&k=cznM6Q00) 点击按钮入群。
