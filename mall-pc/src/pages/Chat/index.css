@@ -1,0 +1,117 @@
+#chat-ctn {
+    padding: 3rem;
+    background: #fff;
+}
+
+#chat-list {
+    width: 100%;
+    background: #f4f6f8;
+    height: 600px;
+    overflow-y: scroll;
+    padding: 20px 5px 20px;
+}
+
+#chat-list ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#chat-list ul>li {
+    position: relative;
+    clear: both;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 10px
+}
+
+/* 左聊天框 */
+.chat-list-left {
+    display: flex;
+}
+
+.chat-list-left>.chat-list-avatar {
+    flex: 1;
+    max-width: 32px;
+}
+
+.chat-list-left>.chat-list-ctn {
+    flex: 1;
+    align-items: flex-start;
+    max-width: calc(100% - 35% - 32px);
+    margin-left: 10px
+}
+
+.chat-list-left>.chat-list-ctn>.chat-list-info {
+    display: inline-block;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px
+}
+
+/* 右聊天框 */
+.chat-list-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.chat-list-right>.chat-list-avatar {
+    flex: 1;
+    order: 1;
+    max-width: 32px
+}
+
+.chat-list-right>.chat-list-ctn {
+    align-items: flex-end;
+    flex: 1;
+    order: -1;
+    max-width: calc(100% - 35% - 32px);
+    text-align: right;
+    margin-right: 10px
+}
+
+.chat-list-right>.chat-list-ctn>.chat-list-info {
+    text-align: left;
+    background: #D2F9D1;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.chat-list-right>.chat-list-ctn>.chat-list-name {
+    text-align: left;
+}
+
+/* 聊天内容 */
+.chat-list-name {
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-list-ctn {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* 聊天输入框 */
+#chat-input-box {
+    position: relative;
+}
+
+#chat-input {
+    width: 100%;
+    height: 150px;
+    border-radius: 0;
+    resize: none;
+    background: #f4f6f8;
+}
+
+#chat-send {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: rgb(85, 185, 152);
+}

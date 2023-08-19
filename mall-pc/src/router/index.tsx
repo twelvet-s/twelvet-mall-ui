@@ -9,6 +9,10 @@ const Index = lazy(() => import('../pages/Index'))
 const GoodsList = lazy(() => import('../pages/Goods/List'))
 const GoodsDetail = lazy(() => import('../pages/Goods/Detail'))
 
+// 直播间
+const Live = lazy(() => import('../pages/Live'))
+// 聊天室
+const Chat = lazy(() => import('../pages/Chat'))
 
 const Test = lazy(() => import('../pages/Test.tsx'))
 
@@ -52,6 +56,14 @@ const routes: RouteObject[] = [
             {
                 path: '*',
                 element: lazyLoad(<NotFound/>),
+            },
+            {
+                path: '/live',
+                element: lazyLoad(<Live/>),
+            },
+            {
+                path: '/chat',
+                element: lazyLoad(<Chat/>),
             },
         ]
     },

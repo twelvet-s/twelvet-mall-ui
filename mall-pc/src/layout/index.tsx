@@ -1,10 +1,11 @@
 import React from 'react'
-import {Outlet, useNavigate} from 'react-router-dom'
-import {Col, Layout as AntdLayout, Menu, Row} from 'antd'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { Col, Layout as AntdLayout, Menu, Row, FloatButton } from 'antd'
+import { VideoCameraOutlined, WhatsAppOutlined, TeamOutlined } from '@ant-design/icons'
 import './index.css'
 import logo from '../assets/logo.svg'
 
-const {Header, Content, Footer} = AntdLayout;
+const { Header, Content, Footer } = AntdLayout;
 
 const Layout: React.FC = () => {
 
@@ -20,12 +21,11 @@ const Layout: React.FC = () => {
         defaultSelectedKey = 'goodsList'
     }
 
-
     return (
         <AntdLayout className="layout">
-            <Header style={{display: 'flex', alignItems: 'center'}}>
+            <Header style={{ display: 'flex', alignItems: 'center' }}>
                 <div className={'logo'}>
-                    <img src={logo} alt="logo"/>
+                    <img src={logo} alt="logo" />
                     twelvet
                 </div>
                 <Menu
@@ -55,11 +55,21 @@ const Layout: React.FC = () => {
                 <Row>
                     <Col sm={4} xs={1}></Col>
                     <Col sm={16} xs={22}>
-                        <Outlet/>
+                        <Outlet />
                     </Col>
                 </Row>
             </Content>
-            <Footer style={{textAlign: 'center'}}>twelvet mall ©2023 Created by twelvet</Footer>
+            <Footer style={{ textAlign: 'center' }}>twelvet mall ©2023 Created by twelvet</Footer>
+
+
+            <FloatButton.Group
+                trigger='hover'
+                icon={<WhatsAppOutlined />}
+            >
+                <FloatButton href='/live' target='_blank' icon={<VideoCameraOutlined />} tooltip='直播间' />
+                <FloatButton href='/chat' target='_blank' icon={<TeamOutlined />} tooltip='聊天室' />
+            
+            </FloatButton.Group>
         </AntdLayout>
     )
 }
