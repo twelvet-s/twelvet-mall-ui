@@ -44,6 +44,21 @@ export default [
         ]
     },
     {
+        title: '直播管理',
+        icon: 'icon-live',
+        name: 'live',
+        path: '/live',
+        routes: [
+            {
+                title: '直播间',
+                icon: 'icon-live',
+                name: 'live',
+                path: '/live/room',
+                component: './Live/LiveRoom'
+            }
+        ]
+    },
+    {
         title: '系统管理',
         name: 'systemManagement',
         icon: 'icon-system',

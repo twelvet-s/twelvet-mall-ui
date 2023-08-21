@@ -46,19 +46,19 @@ const Chat: React.FC = () => {
         setUsername(`${result}`)
 
         // 创建WebSocket
-        const socket = new WebSocket('ws://127.0.0.1:8080/im')
+        const socket = new WebSocket('ws://192.168.1.106:8080/im')
         // 监听消息接收事件
         socket.onmessage = (event: MessageEvent) => {
             const message = event.data as string;
 
             const msg = JSON.parse(message) as { self: boolean, username: string, info: string }
-
+            
             const info: {
                 self: boolean
                 username: string
                 info: string
             } = {
-                self: false,
+                self: msg.self,
                 username: msg.username,
                 info: msg.info
             }

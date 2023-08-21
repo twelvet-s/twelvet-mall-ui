@@ -53,10 +53,11 @@ const Layout: React.FC = () => {
             </Header>
             <Content>
                 <Row>
-                    <Col sm={4} xs={1}></Col>
-                    <Col sm={16} xs={22}>
+                    <Col sm={3} xs={1}></Col>
+                    <Col sm={18} xs={22}>
                         <Outlet />
                     </Col>
+                    <Col sm={3} xs={1}></Col>
                 </Row>
             </Content>
             <Footer style={{ textAlign: 'center' }}>twelvet mall ©2023 Created by twelvet</Footer>
