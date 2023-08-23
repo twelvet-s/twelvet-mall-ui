@@ -40,7 +40,7 @@ const Video: React.FC = () => {
             const playerMpegts = mpegts.createPlayer({
                 type: 'flv',  // could also be mpegts, m2ts, flv
                 isLive: true,
-                url: 'https://pull-f3.douyincdn.com/third/stream-113600563404341931_sd.flv?auth_key=1693385851-0-0-9fc12bdd0d81bab0e52fb361671b9480&abr_pts=-800&session_id=037-2023082317273132B5BBACDA001A03510A'
+                url: 'flv直播源地址'
             });
             playerMpegts.attachMediaElement(videoRef.current);
             playerMpegts.load();
