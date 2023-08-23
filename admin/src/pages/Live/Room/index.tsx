@@ -7,12 +7,25 @@ import Chat from './Chat'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { PageContainer } from '@ant-design/pro-components'
 
-const Live: React.FC = () => {
+const { confirm } = Modal;
 
-    const { confirm } = Modal;
+const Live: React.FC = () => {
 
     // 是否开启直播
     const [initLive, setInitLive] = useState<boolean>(false)
+
+    /**
+     * 开始直播
+     */
+    const handleLiveStart = () => {
+        confirm({
+            icon: <ExclamationCircleOutlined />,
+            content: '是否确认发起直播',
+            onOk() {
+                setInitLive(true)
+            },
+        });
+    }
 
     return (
         <PageContainer>
@@ -35,15 +48,7 @@ const Live: React.FC = () => {
                         </Col>
                     </Row>
                 ) : (
-                    <Button onClick={() => {
-                        confirm({
-                            icon: <ExclamationCircleOutlined />,
-                            content: '是否确认发起直播',
-                            onOk() {
-                                setInitLive(true)
-                            },
-                          });
-                    }}> 发起直播</Button>
+                    <Button onClick={handleLiveStart}> 发起直播</Button>
                 )
             }
         </PageContainer>

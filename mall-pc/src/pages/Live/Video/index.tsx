@@ -40,7 +40,7 @@ const Video: React.FC = () => {
             const playerMpegts = mpegts.createPlayer({
                 type: 'flv',  // could also be mpegts, m2ts, flv
                 isLive: true,
-                url: 'https://sf1-hscdn-tos.pstatp.com/obj/media-fe/xgplayer_doc_video/flv/xgplayer-demo-360p.flv'
+                url: 'https://pull-f3.douyincdn.com/third/stream-113600563404341931_sd.flv?auth_key=1693385851-0-0-9fc12bdd0d81bab0e52fb361671b9480&abr_pts=-800&session_id=037-2023082317273132B5BBACDA001A03510A'
             });
             playerMpegts.attachMediaElement(videoRef.current);
             playerMpegts.load();

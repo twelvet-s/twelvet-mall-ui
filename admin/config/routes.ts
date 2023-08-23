@@ -54,7 +54,7 @@ export default [
                 icon: 'icon-live',
                 name: 'live',
                 path: '/live/room',
-                component: './Live/LiveRoom'
+                component: './Live/Room'
             }
         ]
     },
