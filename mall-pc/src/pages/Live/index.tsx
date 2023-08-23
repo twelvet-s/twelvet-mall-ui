@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, {  } from 'react'
 
 import './index.css'
-import { Avatar, Button, Col, Divider, Input, Row, Space, Tooltip } from 'antd'
-import { UserOutlined } from '@ant-design/icons'
+import { Col, Divider, Row } from 'antd'
 import Video from './Video'
 import Chat from './Chat'
 

@@ -1,8 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 
 import './index.css'
-import { Avatar, Button, Col, Divider, Input, Row, Space, Tooltip } from 'antd'
-import { UserOutlined } from '@ant-design/icons'
 
 const Chat: React.FC = () => {
 
