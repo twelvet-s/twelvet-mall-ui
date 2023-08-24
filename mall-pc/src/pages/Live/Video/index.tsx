@@ -3,7 +3,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import './index.css'
 import mpegts from 'mpegts.js'
 
-const Video: React.FC = () => {
+
+
+const Video: React.FC<{
+    flvSource: string
+}> = props => {
+
+    const { flvSource } = props
 
     const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -36,11 +42,19 @@ const Video: React.FC = () => {
     }
 
     useEffect(() => {
-        if (mpegts.getFeatureList().mseLivePlayback && videoRef && videoRef.current) {
+        // 监听全屏
+        document.addEventListener('keydown', event => {
+            handleFullscreen(event)
+        });
+
+    }, [])
+
+    useEffect(() => {
+        if (flvSource && mpegts.getFeatureList().mseLivePlayback && videoRef && videoRef.current) {
             const playerMpegts = mpegts.createPlayer({
                 type: 'flv',  // could also be mpegts, m2ts, flv
                 isLive: true,
-                url: 'flv直播源地址'
+                url: flvSource
             });
             playerMpegts.attachMediaElement(videoRef.current);
             playerMpegts.load();
@@ -48,13 +62,7 @@ const Video: React.FC = () => {
 
             setPlayer(playerMpegts);
         }
-
-        // 监听全屏
-        document.addEventListener('keydown', event => {
-            handleFullscreen(event)
-        });
-
-    }, [])
+    }, [flvSource])
 
     useEffect(() => {
         // 关闭页面需要销毁
