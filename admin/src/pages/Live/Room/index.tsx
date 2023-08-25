@@ -36,14 +36,14 @@ const Live: React.FC = () => {
                             <div id='live-ctn'>
                                 <div id='live-ctn-header'></div>
                                 <div id='live-ctn-video'>
-                                    <Video live={initLive} />
+                                    <Video />
                                 </div>
                                 <div id='live-ctn-option'></div>
                             </div>
                         </Col>
                         <Col sm={6} xs={24}>
                             <div id='chat-ctn'>
-                                <Chat live={initLive} />
+                                <Chat />
                             </div>
                         </Col>
                     </Row>
