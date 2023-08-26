@@ -3,54 +3,52 @@ import React, { useEffect, useRef } from 'react'
 import './index.css'
 
 interface VideoProps {
-
+    liveType: 'video' | 'shareScreen'
 }
 
-const Video: React.FC<VideoProps> = () => {
+const Video: React.FC<VideoProps> = porps => {
 
-    const videoRef = useRef(null);
+    // 发起的直播类型
+    const { liveType } = porps
+
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        // 打开摄像头开始获取视频流
-        // navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        //     .then(function (stream) {
+        if (liveType === 'video') { // 视频直播
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // 获取用户媒体设备的权限
+                navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                    .then((stream) => {
+                        // 将摄像头画面流附加到 video 元素
+                        if (videoRef.current) {
+                            videoRef.current.srcObject = stream
+                        }
 
-        //         // 处理获取到的媒体流
-        //         const mediaRecorder = new MediaRecorder(stream);
-        //         const chunks = [];
-        //         mediaRecorder.addEventListener('dataavailable', function (event) {
-        //             chunks.push(event.data);
-        //         });
-        //         mediaRecorder.start();
+                    })
+                    .catch((error) => {
+                        console.error("Error accessing camera:", error);
+                    });
+            } else {
+                // 浏览器不支持 getUserMedia
+                alert('浏览器不支持')
+            }
+        } else if (liveType === 'shareScreen') { // 共享屏幕直播
+            const startScreenSharing = async () => {
+                try {
+                    if (videoRef.current) {
+                        const stream = await navigator.mediaDevices.getDisplayMedia();
+                        videoRef.current.srcObject = stream;
+                    }
 
-        //         mediaRecorder.addEventListener('dataavailable', function (event) {
-        //             console.log(event.data)
-        //         });
+                } catch (error) {
+                    console.error('Error accessing screen:', error);
+                }
+            }
+            startScreenSharing()
 
-        //     })
-        //     .catch(function (error) {
-        //         // 处理错误
-        //     });
-
-
-        // const constraints = { video: true };
-
-        // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        //     // 获取用户媒体设备的权限
-        //     navigator.mediaDevices.getUserMedia(constraints)
-        //         .then((stream) => {
-        //             // 将摄像头画面流附加到 video 元素
-        //             videoRef.current.srcObject = stream;
-        //         })
-        //         .catch((error) => {
-        //             console.error("Error accessing camera:", error);
-        //         });
-        // } else {
-        //     // 浏览器不支持 getUserMedia
-        //     alert('浏览器不支持')
-        // }
-        
-
+        }
 
     }, [])
 
