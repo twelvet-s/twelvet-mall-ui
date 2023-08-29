@@ -54,7 +54,7 @@ const Video: React.FC<VideoProps> = porps => {
 
     return (
         <>
-            <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '100%' }} />
+            <video ref={videoRef} controls autoPlay={false} style={{ width: '100%', height: '100%' }} />
         </>
     )
 }

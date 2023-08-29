@@ -2,8 +2,8 @@ const { NODE_ENV } = process.env;
 
 const isDev: boolean = NODE_ENV === 'development';
 
-//const REQUEST_URI = isDev ? 'http://192.168.1.106:8080' : 'https://api.twelvet.cn'
-const REQUEST_URI = isDev ? 'http://192.168.230.104:8080' : 'https://api.twelvet.cn'
+const REQUEST_URI = isDev ? 'http://twelvet-gateway:8080' : 'https://api.twelvet.cn'
+
 /**
  * proTable默认配置
  */
