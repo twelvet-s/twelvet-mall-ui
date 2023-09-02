@@ -19,7 +19,7 @@ const Live: React.FC = () => {
                     <div id='live-ctn'>
                         <div id='live-ctn-header'>
                             <Space.Compact style={{ width: '100%' }}>
-                                <Input onChange={e => {
+                                <Input defaultValue={'http://localhost:8080/live/livestream/1.flv'} onChange={e => {
                                     setInputFlvSource(e.target.value)
                                 }} placeholder='请输入FLV格式播放源，进行直播' />
                                 <Button type="primary" onClick={() => {
