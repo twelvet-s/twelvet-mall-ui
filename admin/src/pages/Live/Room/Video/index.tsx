@@ -51,7 +51,7 @@ const Video: React.FC<VideoProps> = porps => {
                 clientip: null,
                 sdp: offer.sdp
             })
-            
+
             console.log('=======', session)
             if (session) {
                 await rtcPeerConnection.setRemoteDescription(
@@ -90,7 +90,7 @@ const Video: React.FC<VideoProps> = porps => {
 
     return (
         <>
-            <video ref={videoRef} controls autoPlay={false} style={{ width: '100%', height: '100%' }} />
+            <video ref={videoRef} autoPlay={false} style={{ width: '100%', height: '100%' }} />
         </>
     )
 }
