@@ -36,7 +36,7 @@ const Live: React.FC = () => {
                             <div id='live-ctn'>
                                 <div id='live-ctn-header'></div>
                                 <div id='live-ctn-video'>
-                                    <Video liveType='shareScreen' />
+                                    <Video />
                                 </div>
                                 <div id='live-ctn-option'></div>
                             </div>

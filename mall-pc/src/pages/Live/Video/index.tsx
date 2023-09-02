@@ -76,7 +76,7 @@ const Video: React.FC<{
 
     return (
         <>
-            <video controls autoPlay={false} ref={videoRef} style={{ width: '100%', height: '100%' }} />
+            <video autoPlay={false} ref={videoRef} style={{ width: '100%', height: '100%' }} />
         </>
     )
 }

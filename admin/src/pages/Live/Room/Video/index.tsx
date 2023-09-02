@@ -3,20 +3,14 @@ import { push } from '../service'
 
 import './index.css'
 
-interface VideoProps {
-    liveType: 'video' | 'shareScreen'
-}
 
-const Video: React.FC<VideoProps> = porps => {
+const Video: React.FC = () => {
 
-    // 发起的直播类型
-    const { liveType } = porps
 
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const rtcPeerConnection = new RTCPeerConnection();
     //const mediaStream = new MediaStream();
-
 
 
     // 使用webrtc发送数据
@@ -62,21 +56,16 @@ const Video: React.FC<VideoProps> = porps => {
 
     // 开始直播
     const startLive = async () => {
-        if (liveType === 'video') { // 视频直播
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                // 获取用户媒体设备的权限
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
-                startScreenSharing(stream)
-            } else {
-                // 浏览器不支持 getUserMedia
-                alert('浏览器不支持')
-            }
-        } else if (liveType === 'shareScreen') { // 共享屏幕直播
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // 获取用户媒体设备的权限
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true
+            })
+            startScreenSharing(stream)
+        } else {
+            // 浏览器不支持 getUserMedia，开启共享桌面直播
             const stream = await navigator.mediaDevices.getDisplayMedia();
             startScreenSharing(stream)
-
         }
     }
 
