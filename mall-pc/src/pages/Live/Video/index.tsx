@@ -58,7 +58,7 @@ const Video: React.FC<{
             });
             playerMpegts.attachMediaElement(videoRef.current);
             playerMpegts.load();
-            const play = playerMpegts.play()
+            playerMpegts.play();
 
             setPlayer(playerMpegts);
         }
