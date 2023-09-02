@@ -7,7 +7,7 @@ import Chat from './Chat'
 
 const Live: React.FC = () => {
 
-    const [inputFlvSource, setInputFlvSource] = useState<string>()
+    const [inputFlvSource, setInputFlvSource] = useState<string>('http://localhost:8080/live/livestream/1.flv')
 
     const [flvSource, setFlvSource] = useState<string>('')
 
