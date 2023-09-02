@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { push } from '../service'
 
 import './index.css'
 
@@ -13,43 +14,78 @@ const Video: React.FC<VideoProps> = porps => {
 
     const videoRef = useRef<HTMLVideoElement>(null);
 
-    useEffect(() => {
+    const rtcPeerConnection = new RTCPeerConnection();
+    const mediaStream = new MediaStream();
+
+
+
+    // 使用webrtc发送数据
+    const startScreenSharing = async (stream: MediaProvider) => {
+        if (videoRef.current) {
+            const tid = 1;
+            rtcPeerConnection.addTransceiver("audio", { direction: "sendonly" });
+            rtcPeerConnection.addTransceiver("video", { direction: "sendonly" });
+            //rtcPeerConnection.addTransceiver("video", {direction: "sendonly"});
+            //rtcPeerConnection.addTransceiver("audio", {direction: "sendonly"});
+
+            videoRef.current.srcObject = stream;
+            videoRef.current.play();
+            // @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addStream#Migrating_to_addTrack
+            stream.getTracks().forEach(function (track: MediaStreamTrack) {
+                rtcPeerConnection.addTrack(track);
+
+                // Notify about local track when stream is ok.
+                //mediaStream.addTrack(track);
+            });
+
+            let offer = await rtcPeerConnection.createOffer();
+            await rtcPeerConnection.setLocalDescription(offer);
+            // 发送数据
+            let session: {
+                sdp: string,
+            } = await push({
+                // 自定义直播token
+                token: tid,
+                // webrtc规范主要
+                streamurl: "webrtc://localhost/live/livestream/1",
+                clientip: null,
+                sdp: offer.sdp
+            })
+            
+            console.log('=======', session)
+            if (session) {
+                await rtcPeerConnection.setRemoteDescription(
+                    new RTCSessionDescription({ type: 'answer', sdp: session.sdp })
+                );
+            }
+
+        }
+
+    };
+
+
+    // 开始直播
+    const startLive = async () => {
         if (liveType === 'video') { // 视频直播
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 // 获取用户媒体设备的权限
-                navigator.mediaDevices.getUserMedia({
+                const stream = navigator.mediaDevices.getUserMedia({
                     video: true
                 })
-                    .then((stream) => {
-                        // 将摄像头画面流附加到 video 元素
-                        if (videoRef.current) {
-                            videoRef.current.srcObject = stream
-                        }
-
-                    })
-                    .catch((error) => {
-                        console.error("Error accessing camera:", error);
-                    });
+                startScreenSharing(stream)
             } else {
                 // 浏览器不支持 getUserMedia
                 alert('浏览器不支持')
             }
         } else if (liveType === 'shareScreen') { // 共享屏幕直播
-            const startScreenSharing = async () => {
-                try {
-                    if (videoRef.current) {
-                        const stream = await navigator.mediaDevices.getDisplayMedia();
-                        videoRef.current.srcObject = stream;
-                    }
-
-                } catch (error) {
-                    console.error('Error accessing screen:', error);
-                }
-            }
-            startScreenSharing()
+            const stream = await navigator.mediaDevices.getDisplayMedia();
+            startScreenSharing(stream)
 
         }
+    }
 
+    useEffect(() => {
+        startLive()
     }, [])
 
     return (
