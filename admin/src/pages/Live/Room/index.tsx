@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import './index.css'
 import { Button, Col, Modal, Row } from 'antd'
 import Video from './Video'
-import Chat from './Chat'
+import RightTool from './RightTool'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { PageContainer } from '@ant-design/pro-components'
 
@@ -43,7 +43,7 @@ const Live: React.FC = () => {
                         </Col>
                         <Col sm={6} xs={24}>
                             <div id='chat-ctn'>
-                                <Chat />
+                                <RightTool />
                             </div>
                         </Col>
                     </Row>
