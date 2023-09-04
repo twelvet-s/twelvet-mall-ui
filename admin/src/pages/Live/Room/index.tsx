@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import './index.css'
+import styles from './index.css'
 import { Button, Col, Modal, Row } from 'antd'
 import Video from './Video'
 import RightTool from './RightTool'
@@ -33,16 +33,17 @@ const Live: React.FC = () => {
                 initLive ? (
                     <Row gutter={{ sm: 15 }}>
                         <Col sm={18} xs={24}>
-                            <div id='live-ctn'>
-                                <div id='live-ctn-header'></div>
-                                <div id='live-ctn-video'>
+                            <div className={styles.liveCtn}>
+                                <div className={styles.liveCtnVideo}>
                                     <Video />
                                 </div>
-                                <div id='live-ctn-option'></div>
+                                <div className={styles.liveCtnOption}>
+                                    控制区域
+                                </div>
                             </div>
                         </Col>
                         <Col sm={6} xs={24}>
-                            <div id='chat-ctn'>
+                            <div className={styles.rightTool}>
                                 <RightTool />
                             </div>
                         </Col>

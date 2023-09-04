@@ -1,0 +1,46 @@
+.ctn {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: #fff;
+    padding: 10px;
+    opacity: 0.9;
+}
+
+.cursorPointer:hover {
+    cursor: pointer;
+    color: rgb(245, 148, 184);
+}
+
+/* 素材列表区域 */
+.marginRight10 {
+    margin-right: 10px
+}
+
+.ctnList {
+    width: 100%;
+    height: calc(320px - 30px);
+    overflow-y: auto;
+}
+
+.ctnListItem {
+    display: flex;
+    font-size: 15px;
+    padding: 10px;
+}
+
+.ctnListItemLeft {
+    flex: 7;
+}
+
+.ctnListItemRight {
+    flex: 1;
+}
+
+/* 控制器区域 */
+.control {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    height: 50px
+}

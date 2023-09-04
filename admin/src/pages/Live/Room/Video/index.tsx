@@ -31,8 +31,8 @@ const Video: React.FC = () => {
                 //mediaStream.addTrack(track);
             });
 
+            // 创建offer并设置本地
             const offer = await rtcPeerConnection.createOffer();
-
             await rtcPeerConnection.setLocalDescription(offer);
 
             // 发送数据
@@ -43,6 +43,7 @@ const Video: React.FC = () => {
             })
 
             if (session) {
+                // 设置远程sdp
                 await rtcPeerConnection.setRemoteDescription(
                     new RTCSessionDescription({ type: 'answer', sdp: session.sdp })
                 );
@@ -54,7 +55,7 @@ const Video: React.FC = () => {
 
 
     // 生成video，canvas需要基于video进行绘制
-    const genVideo = (stream, width, height) => {
+    const genVideo = (stream: MediaProvider | null, width: number, height: number) => {
         const videoEl = document.createElement('video');
         videoEl.autoplay = true;
         videoEl.srcObject = stream;
@@ -76,8 +77,8 @@ const Video: React.FC = () => {
             const canvasContext = canvas.getContext('2d')
 
 
-            if (navigator.mediaDevices.getUserMedia) {
-
+            if (false) {
+                if (!canvasContext) { return }
                 // 获取用户媒体设备的权限
                 // 麦克风
                 const audioStream = await navigator.mediaDevices.getUserMedia({
@@ -101,7 +102,7 @@ const Video: React.FC = () => {
                     canvasContext.fillStyle = "#409eff"
                     canvasContext.textAlign = "center"
                     // 添加文字和位置
-                    canvasContext.fillText("custom title", 200, 50)
+                    canvasContext.fillText("twelvet", 200, 50)
                     requestAnimationFrame(drawFrame);
                 }
                 drawFrame()
@@ -131,21 +132,22 @@ const Video: React.FC = () => {
                 startScreenSharing(mergedStream)
 
             } else {
-                // 浏览器不支持 getUserMedia，开启共享桌面直播
+                // 开启共享桌面直播
                 const displayMediastream = await navigator.mediaDevices.getDisplayMedia();
-
+                
                 // 生成视频流
                 const cameraVideo = genVideo(displayMediastream, videoRef.current?.offsetWidth, videoRef.current?.offsetHeight)
 
                 const drawFrame = () => {
-                    canvasContext?.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height)
+                    if (!canvasContext) { return }
+                    canvasContext.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height)
 
 
                     canvasContext.font = "40px Microsoft YaHei"
                     canvasContext.fillStyle = "#409eff"
                     canvasContext.textAlign = "center"
                     // 添加文字和位置
-                    canvasContext.fillText("custom title", 200, 50)
+                    canvasContext.fillText("twelvet", 200, 50)
                     requestAnimationFrame(drawFrame);
                 }
                 drawFrame()

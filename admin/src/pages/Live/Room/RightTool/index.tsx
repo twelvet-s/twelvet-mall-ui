@@ -1,18 +1,26 @@
 import React from 'react'
+import MateralList from './MaterialList'
+import BulletScreenInteraction from './BulletScreenInteraction'
+import styles from './index.css'
+import { Row, Col } from 'antd'
 
-import './index.css'
 
-interface ChatProps {
-    
-}
-
-const Chat: React.FC<ChatProps> = () => {
+const RightTool: React.FC = () => {
 
     return (
-        <>
-            聊天室
-        </>
+        <div id={styles.ctn}>
+            <Row id={styles.materalList} className={styles.item}>
+                <Col span={24}>
+                    <MateralList />
+                </Col>
+            </Row>
+            <Row className={styles.item}>
+                <Col span={24}>
+                    <BulletScreenInteraction />
+                </Col>
+            </Row>
+        </div>
     )
 }
 
-export default Chat
+export default RightTool

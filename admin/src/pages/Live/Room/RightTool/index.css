@@ -1,0 +1,15 @@
+#ctn {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.item {
+    flex: 1;
+    border-radius: 12px;
+    overflow-y: hidden;
+}
+
+#materalList {
+    margin-bottom: 10px;
+}
