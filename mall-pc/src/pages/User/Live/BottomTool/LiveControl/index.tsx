@@ -37,21 +37,13 @@ const LiveControl: React.FC = () => {
                 streamurl: 'webrtc://localhost:8080/live/livestream/1'
             }),
         })
-        
-        let session: {
-            sdp: string,
-        };
-        response.json().then(res => {
-            console.log(res)
-            return res
-        });
-        console.log('==============', session)
-        if (session) {
+
+        response.json().then(async (res) => {
             // 设置远程sdp
             await rtcPeerConnection.setRemoteDescription(
-                new RTCSessionDescription({ type: 'answer', sdp: session.sdp })
+                new RTCSessionDescription({ type: 'answer', sdp: res.sdp })
             );
-        }
+        });
 
     };
 
