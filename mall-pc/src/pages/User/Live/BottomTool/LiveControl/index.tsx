@@ -27,23 +27,26 @@ const LiveControl: React.FC = () => {
         await rtcPeerConnection.setLocalDescription(offer);
 
         // 发送数据
-        const response = await fetch(`http://127.0.0.1:1985/rtc/v1/publish/`, {
+        const response: {
+            sdp: string
+        } = await fetch(`http://127.0.0.1:1985/rtc/v1/publish/`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
             },
             body: JSON.stringify({
                 sdp: offer.sdp,
-                streamurl: 'webrtc://localhost:8080/live/livestream/1'
+                streamurl: '/live/livestream/1'
             }),
+        }).then(res => {
+            return res.json()
         })
 
-        response.json().then(async (res) => {
-            // 设置远程sdp
-            await rtcPeerConnection.setRemoteDescription(
-                new RTCSessionDescription({ type: 'answer', sdp: res.sdp })
-            );
-        });
+
+        // 设置远程sdp
+        await rtcPeerConnection.setRemoteDescription(
+            new RTCSessionDescription({ type: 'answer', sdp: response.sdp })
+        );
 
     };
 
