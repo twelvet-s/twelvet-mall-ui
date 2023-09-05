@@ -1,7 +1,7 @@
 import React from 'react'
 
 import styles from './style.module.css'
-import { EyeOutlined, EyeInvisibleOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 
 
