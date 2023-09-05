@@ -75,7 +75,7 @@ const LiveControl: React.FC = () => {
         canvas.height = 670
         const canvasContext = canvas.getContext('2d')
 
-        const condition = true;
+        const condition = false;
         if (condition) {
             if (!canvasContext) { return }
             // 获取用户媒体设备的权限
