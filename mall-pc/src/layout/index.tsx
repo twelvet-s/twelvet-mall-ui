@@ -38,6 +38,9 @@ const Layout: React.FC = () => {
                         } else if (e.key === 'goodsList') {
                             navigate('/goods/list')
                         }
+                        else if (e.key === 'userLive') {
+                            navigate('/user/live')
+                        }
                     }}
                     items={[
                         {
@@ -47,6 +50,10 @@ const Layout: React.FC = () => {
                         {
                             key: 'goodsList',
                             label: `商品列表`,
+                        },
+                        {
+                            key: 'userLive',
+                            label: `发起直播`,
                         },
                     ]}
                 />
