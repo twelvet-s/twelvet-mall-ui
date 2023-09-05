@@ -1,0 +1,58 @@
+.ctn {
+    flex: 1 1 0%;
+    margin-left: 20px;
+}
+
+.marginRight10 {
+    margin-right: 10px;
+}
+
+.avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+}
+
+.flex {
+    display: flex;
+}
+
+.ctnBottom,
+.ctnTop {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ctnTop {
+    margin-bottom: 10px;
+}
+
+.liveTitle{
+    align-items: flex-end;
+    border: 0 solid #e5e7eb;
+    box-sizing: border-box;
+}
+
+.liveTitleText {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.liveTitleEdit {
+    height: 28px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.liveTitleEdit:hover {
+    color: rgb(22, 119, 255);
+}
+
+.liveArea {
+    border-radius: 14px;
+    font-size: 15px;
+    height: 28px;
+    line-height: 28px;
+    min-width: 90px;
+    padding: 0 15px;
+}

@@ -6,6 +6,7 @@ import Video from './Video'
 import RightTool from './RightTool'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { PageContainer } from '@ant-design/pro-components'
+import BottomTool from './BottomTool'
 
 const { confirm } = Modal;
 
@@ -38,7 +39,7 @@ const Live: React.FC = () => {
                                     <Video />
                                 </div>
                                 <div className={styles.liveCtnOption}>
-                                    控制区域
+                                    <BottomTool />
                                 </div>
                             </div>
                         </Col>

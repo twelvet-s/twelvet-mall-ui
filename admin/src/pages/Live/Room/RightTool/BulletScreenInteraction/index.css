@@ -7,11 +7,6 @@
     opacity: 0.9;
 }
 
-.cursorPointer:hover {
-    cursor: pointer;
-    color: rgb(245, 148, 184);
-}
-
 /* 素材列表区域 */
 .marginRight10 {
     margin-right: 10px

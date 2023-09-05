@@ -11,9 +11,8 @@ const BulletScreenInteraction: React.FC = () => {
         return (
             <div className={styles.ctnListItem}>
                 <div className={styles.ctnListItemLeft}>
-                    <EyeOutlined className={`${styles.marginRight10} ${styles.cursorPointer}`} />
-                    {/* <EyeInvisibleOutlined /> */}
-                    <span className={`${styles.cursorPointer}`}>自行车自自行车自自行</span>
+                    <span className={`${styles.marginRight10}`}>twelvet-s:</span>
+                    <span>你好，进入直播观看</span>
                 </div>
             </div>
         )

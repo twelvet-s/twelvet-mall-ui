@@ -16,11 +16,12 @@
 }
 
 .liveCtnOption {
+    display: flex;
     height: 115px;
     border-radius: 0 0 12px 12px;
     background: #fff;
-    text-align: center;
-    line-height: 115px;
+    opacity: .9;
+    padding: 10px;
 }
 
 /* 右边聊天室 */
