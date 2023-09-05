@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './index.css'
+import styles from './style.module.css'
 import { Button, Select } from 'antd'
 import { BugOutlined, EditOutlined, QuestionCircleOutlined, ShareAltOutlined } from '@ant-design/icons'
 import LiveControl from './LiveControl'

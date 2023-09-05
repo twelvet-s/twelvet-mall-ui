@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { push } from '../service'
 
-import './index.css'
+import styles from './style.module.css'
 
 
 const Video: React.FC = () => {
@@ -164,7 +164,7 @@ const Video: React.FC = () => {
     }
 
     return (
-        <div id='ctn' ref={ctnRef}>
+        <div id={styles.ctn} ref={ctnRef}>
             <video ref={videoRef} autoPlay={false} style={{ width: '100%', height: '100%' }} />
         </div>
     )

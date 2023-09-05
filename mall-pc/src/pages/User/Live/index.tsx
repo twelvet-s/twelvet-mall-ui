@@ -1,16 +1,16 @@
 import React from 'react'
 
-import styles from './index.css'
+import styles from './style.module.css'
 import Video from './Video'
 import RightTool from './RightTool'
-import { PageContainer } from '@ant-design/pro-components'
 import BottomTool from './BottomTool'
-import { Row, Col } from 'antd'
+import { Row, Col, Divider } from 'antd'
 
 const Live: React.FC = () => {
 
     return (
-        <PageContainer>
+        <>
+            <Divider />
             <Row gutter={{ sm: 15 }}>
                 <Col sm={18} xs={24}>
                     <div className={styles.liveCtn}>
@@ -28,7 +28,8 @@ const Live: React.FC = () => {
                     </div>
                 </Col>
             </Row>
-        </PageContainer>
+        </>
+
     )
 }
 
