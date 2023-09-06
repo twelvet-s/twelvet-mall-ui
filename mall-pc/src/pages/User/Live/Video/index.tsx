@@ -1,11 +1,20 @@
-import React, { useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 
 import styles from './style.module.css'
+import { LiveContext } from '../LiveContextProvider'
 
 
 const Video: React.FC = () => {
 
-    const videoRef = useRef<HTMLVideoElement>(null);
+    const { videoStream } = useContext(LiveContext)
+
+    const videoRef = useRef<HTMLVideoElement>(null)
+
+    useEffect(() => {
+        console.log('video=============', videoStream)
+        videoRef.current.srcObject = videoStream
+        videoRef.current.play();
+    }, [videoStream])
 
     return (
         <div id={styles.ctn}>

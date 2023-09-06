@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import styles from './style.module.css'
 import Video from './Video'
 import RightTool from './RightTool'
 import BottomTool from './BottomTool'
 import { Row, Col, Divider } from 'antd'
+import LiveContextProvider from './LiveContextProvider'
 
 const Live: React.FC = () => {
+
+    const videoRef = useRef<HTMLVideoElement>(null)
 
     return (
         <>
@@ -15,10 +18,12 @@ const Live: React.FC = () => {
                 <Col sm={18} xs={24}>
                     <div className={styles.liveCtn}>
                         <div className={styles.liveCtnVideo}>
-                            <Video />
+                            <video ref={videoRef} autoPlay={false} style={{ width: '100%', height: '100%' }} />
                         </div>
                         <div className={styles.liveCtnOption}>
-                            <BottomTool />
+                            <LiveContextProvider>
+                                <BottomTool />
+                            </LiveContextProvider>
                         </div>
                     </div>
                 </Col>
