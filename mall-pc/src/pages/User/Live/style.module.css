@@ -14,7 +14,12 @@
     width: 100%;
 }
 
+#videoCanvas{
+    position: absolute;
+}
+
 .liveCtnVideo {
+    position: relative;
     height: 670px;
     background: #000;
 }

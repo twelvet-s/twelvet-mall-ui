@@ -5,8 +5,11 @@ import { Row, Col, Divider } from 'antd'
 import BottomTool from './BottomTool'
 import RightTool from './RightTool'
 import Video from './Video'
+import { fabric } from 'fabric'
 
 const Live: React.FC = () => {
+
+    const [fabricHandle, setFabricHandle] = useState()
 
     // WebRTC
     const rtcPeerConnection = new RTCPeerConnection()
@@ -287,19 +290,60 @@ const Live: React.FC = () => {
             }).catch(e => {
                 console.log(e)
             })
-        } else if (liveStatus === 2) {// 关闭直播
+        } else if (liveStatus === 2) { // 关闭直播
             closeLive()
         }
     }, [liveStatus])
 
+    useEffect(() => {
+        // 创建一个Canvas实例
+        const videoCanvas = new fabric.Canvas('videoCanvas')
+
+        videoCanvas.setWidth(videoRef.current!.offsetWidth)
+        videoCanvas.setHeight(videoRef.current!.offsetHeight)
+        videoCanvas.setBackgroundColor('black', () => {
+            console.log('setBackgroundColor回调');
+        });
+        // 创建矩形对象并添加到Canvas
+        // const rect = new fabric.Rect({
+        //     left: 50,
+        //     top: 50,
+        //     fill: 'red',
+        //     width: 200,
+        //     height: 200
+        // });
+        // videoCanvas.add(rect);
+
+        // const demoEl = document.getElementById('demo')
+        // const demoRect = new fabric.Rect({
+        //     width: demoEl.clientWidth,
+        //     height: demoEl.clientHeight,
+        //     fill: 'red'
+        // });
+        // const demoObj = fabric.util.wrapElement(demoEl, 'dom')
+        // console.log(demoObj)
+        //canvas.add(demoObj)
+
+        setFabricHandle(videoCanvas)
+    }, []);
+
     return (
         <>
             <Divider />
+            <div id='demo' style={{
+                width: 200,
+                height: 200,
+                background: 'red'
+            }}>
+
+            </div>
             <Row gutter={{ sm: 15 }}>
                 <Col sm={18} xs={24}>
                     <div className={styles.liveCtn}>
                         <div className={styles.liveCtnVideo}>
+                            <canvas id="videoCanvas"></canvas>
                             <Video ref={videoRef} />
+
                         </div>
                         <div className={styles.liveCtnOption}>
                             <BottomTool handleLiveStatus={handleLiveStatus} />

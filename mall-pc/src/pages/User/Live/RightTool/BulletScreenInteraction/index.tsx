@@ -6,26 +6,17 @@ import { Button, Input } from 'antd'
 
 const BulletScreenInteraction: React.FC = () => {
 
-    const genBarrage = () => {
-        return (
-            <div className={styles.ctnListItem}>
-                <div className={styles.ctnListItemLeft}>
-                    <span className={`${styles.marginRight10}`}>twelvet-s:</span>
-                    <span>你好，进入直播观看</span>
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className={styles.ctn}>
             <h4 className={styles.ctnTitle}>弹幕互动区</h4>
             <div className={styles.ctnList}>
 
-                {
-                    [genBarrage(),
-                    genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage()]
-                }
+                <div className={styles.ctnListItem}>
+                    <div className={styles.ctnListItemLeft}>
+                        <span className={`${styles.marginRight10}`}>twelvet-s:</span>
+                        <span>你好，进入直播观看</span>
+                    </div>
+                </div>
 
             </div>
             <div className={styles.control}>
