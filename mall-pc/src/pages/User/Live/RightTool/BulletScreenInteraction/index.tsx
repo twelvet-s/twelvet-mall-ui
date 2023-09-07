@@ -6,7 +6,7 @@ import { Button, Input } from 'antd'
 
 const BulletScreenInteraction: React.FC = () => {
 
-    const genMaterial = () => {
+    const genBarrage = () => {
         return (
             <div className={styles.ctnListItem}>
                 <div className={styles.ctnListItemLeft}>
@@ -23,8 +23,8 @@ const BulletScreenInteraction: React.FC = () => {
             <div className={styles.ctnList}>
 
                 {
-                    [genMaterial(),
-                    genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial(), genMaterial()]
+                    [genBarrage(),
+                    genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage(), genBarrage()]
                 }
 
             </div>

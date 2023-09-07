@@ -67,7 +67,7 @@ const Layout: React.FC = () => {
                     <Col sm={3} xs={1}></Col>
                 </Row>
             </Content>
-            <Footer style={{ textAlign: 'center' }}>twelvet mall ©2023 Created by twelvet</Footer>
+            <Footer style={{ textAlign: 'center' }}>twelvet mall ©2023 - {new Date().getFullYear()} Created by twelvet</Footer>
 
 
             <FloatButton.Group

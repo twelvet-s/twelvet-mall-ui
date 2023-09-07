@@ -1,11 +1,12 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styles from './style.module.css'
 import { Button, Select } from 'antd'
 import { BugOutlined, EditOutlined, QuestionCircleOutlined, ShareAltOutlined } from '@ant-design/icons'
-import LiveControl from './LiveControl'
 
 
-const BottomTool: React.FC = () => {
+const BottomTool: React.FC<{
+    handleLiveStatus: (liveStatus: 1 | 2) => void
+}> = (props) => {
 
     return (
         <>
@@ -76,14 +77,9 @@ const BottomTool: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* <Button type='primary' onClick={() => {
-                        startLive().then(() => {
-                            console.log('start live success')
-                        }).catch((err) => {
-                            console.log(err)
-                        })
-                    }}>开始直播</Button> */}
-                    <LiveControl />
+                    <Button type='primary' onClick={() => {
+                        props.handleLiveStatus(1)
+                    }}>开始直播</Button>
                 </div>
             </div>
         </>

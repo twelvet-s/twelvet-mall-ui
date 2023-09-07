@@ -1,27 +1,17 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { forwardRef } from 'react'
 
 import styles from './style.module.css'
-import { LiveContext } from '../LiveContextProvider'
 
 
-const Video: React.FC = () => {
-
-    const { videoStream } = useContext(LiveContext)
-
-    const videoRef = useRef<HTMLVideoElement>(null)
-
-    useEffect(() => {
-        console.log('video=============', videoStream)
-        videoRef.current.srcObject = videoStream
-        videoRef.current.play();
-    }, [videoStream])
+const VideoComponent: React.ForwardRefRenderFunction<HTMLVideoElement> = (props, ref: React.Ref<HTMLVideoElement>) => {
 
     return (
         <div id={styles.ctn}>
-            <video ref={videoRef} autoPlay={false} style={{ width: '100%', height: '100%' }} />
+            <video ref={ref} autoPlay={false} style={{ width: '100%', height: '100%' }} />
         </div>
     )
 }
 
-export default Video
+const ForwardedVideoComponent: React.ForwardRefExoticComponent<React.RefAttributes<HTMLVideoElement>> = forwardRef(VideoComponent);
 
+export default ForwardedVideoComponent
