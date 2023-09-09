@@ -14,7 +14,7 @@
     width: 100%;
 }
 
-#videoCanvas{
+#videoCanvas {
     position: absolute;
 }
 
@@ -22,6 +22,7 @@
     position: relative;
     height: 670px;
     background: #000;
+    overflow: hidden;
 }
 
 .liveCtnOption {
@@ -175,7 +176,7 @@
 }
 
 .bulletScreenInteractionCtnTitle {
-    margin:5px 0 5px 0
+    margin: 5px 0 5px 0
 }
 
 /* 素材列表区域 */
@@ -210,6 +211,6 @@
     height: 35px
 }
 
-#bulletScreenInteractionControlSend{
+#bulletScreenInteractionControlSend {
     margin-left: 10px
 }
