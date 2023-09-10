@@ -408,7 +408,7 @@ const Live: React.FC = () => {
         rect?: { left: number; top: number };
         muted?: boolean;
     }) {
-        const videoEl = createVideo({ appendChild: true });
+        const videoEl = createVideo({ appendChild: false });
         if (muted !== undefined) {
             videoEl.muted = muted;
         }
