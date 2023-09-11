@@ -135,7 +135,7 @@ const Live: React.FC = () => {
 
         // 添加流
         // @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addStream#Migrating_to_addTrack
-        stream.getTracks().forEach(function (track: MediaStreamTrack) {
+        videoRef.current.captureStream().getTracks().forEach(function (track: MediaStreamTrack) {
             rtcPeerConnection.addTrack(track)
 
             // Notify about local track when stream is ok.
@@ -303,14 +303,15 @@ const Live: React.FC = () => {
 
             // 生成视频流
             //const cameraVideo = genVideo(event, canvas.width, canvas.height)
-            // 定时渲染
-            renderFrame()
-            // 改变大小
-            changeCanvasStyle()
             const { canvasDom, videoEl, scale } = await autoCreateVideo({
                 stream: event,
                 id: videoTrack.id,
-            });
+            })
+            startScreenSharing()
+            // canvasDom.canvas.getTracks().forEach((track) => {
+            //     console.log('插入track', track);
+            // })
+
             // const videoEl = createVideo({ appendChild: true })
             // videoEl.srcObject = event
             // await new Promise((resolve) => {
@@ -397,6 +398,41 @@ const Live: React.FC = () => {
         return ratio;
     }
 
+    // 处理移动记录坐标
+    function handleMoving({
+        canvasDom,
+        id,
+    }: {
+        canvasDom: fabric.Image | fabric.Text;
+        id: string;
+    }) {
+        // 监控拖动canvas记录坐标
+        canvasDom.on('moving', () => {
+            console.log(
+                'moving',
+                canvasDom.width,
+                canvasDom.height,
+                canvasDom.scaleX,
+                canvasDom.scaleY
+            );
+            console.log(`TOP: ${canvasDom.top}, Left ${canvasDom.left}`)
+        });
+
+    }
+
+    // 处理缩放记录坐标
+    function handleScaling({ canvasDom, id }) {
+        canvasDom.on('scaling', () => {
+            console.log(
+                'scaling',
+                canvasDom.width,
+                canvasDom.height,
+                canvasDom.scaleX,
+                canvasDom.scaleY
+            );
+        });
+    }
+
     function autoCreateVideo({
         stream,
         id,
@@ -432,8 +468,8 @@ const Live: React.FC = () => {
                     height,
                 })
 
-                //handleMoving({ canvasDom, id });
-                //handleScaling({ canvasDom, id });
+                handleMoving({ canvasDom, id });
+                handleScaling({ canvasDom, id });
                 canvasDom.scale(ratio / window.devicePixelRatio);
                 fabricCanvas.add(canvasDom);
 
@@ -442,60 +478,6 @@ const Live: React.FC = () => {
         });
     }
 
-    /**
-     * 1: {scaleX: 1, scaleY: 1}
-     * 2: {scaleX: 0.5, scaleY: 0.5}
-     * 3: {scaleX: 0.3333333333333333, scaleY: 0.3333333333333333}
-     * 4: {scaleX: 0.25, scaleY: 0.25}
-     */
-
-    /**
-     * 二倍屏即1px里面有2个像素；三倍屏1px里面有3个像素，以此类推
-     * 一个图片，宽高都是100px
-     * 一倍屏展示：100px等于100个像素，一比一展示
-     * 二倍屏展示：100px等于100个像素，二比一展示，即在二倍屏的100px看起来会比一倍屏的100px小一倍
-     * 如果需要在一杯和二倍屏幕的时候看的大小都一样：
-     * 1，在二倍屏的时候，需要将100px放大一倍，即200px；
-     * 2，在一倍屏的时候，需要将100px缩小一百，即50px；
-     */
-    function handleScaling({ canvasDom, id }) {
-        canvasDom.on('scaling', () => {
-            // appStore.allTrack.forEach((item) => {
-            //     if (id === item.id) {
-            //         item.scaleInfo[window.devicePixelRatio] = {
-            //             scaleX: canvasDom.scaleX || 1,
-            //             scaleY: canvasDom.scaleY || 1,
-            //         };
-            //         Object.keys(item.scaleInfo).forEach((iten) => {
-            //             if (window.devicePixelRatio !== Number(iten)) {
-            //                 if (window.devicePixelRatio > Number(iten)) {
-            //                     item.scaleInfo[iten] = {
-            //                         scaleX:
-            //                             item.scaleInfo[window.devicePixelRatio].scaleX *
-            //                             window.devicePixelRatio,
-            //                         scaleY:
-            //                             item.scaleInfo[window.devicePixelRatio].scaleY *
-            //                             window.devicePixelRatio,
-            //                     };
-            //                 } else {
-            //                     if (window.devicePixelRatio === 1) {
-            //                         item.scaleInfo[iten] = {
-            //                             scaleX: item.scaleInfo[1].scaleX / Number(iten),
-            //                             scaleY: item.scaleInfo[1].scaleY / Number(iten),
-            //                         };
-            //                     } else {
-            //                         item.scaleInfo[iten] = {
-            //                             scaleX: item.scaleInfo[1].scaleX * Number(iten),
-            //                             scaleY: item.scaleInfo[1].scaleY * Number(iten),
-            //                         };
-            //                     }
-            //                 }
-            //             }
-            //         });
-            //     }
-            // });
-        });
-    }
 
     function changeCanvasStyle() {
         // @ts-ignore
@@ -513,7 +495,6 @@ const Live: React.FC = () => {
     }
 
     function renderAll() {
-        console.log('重新渲染')
         fabricCanvas.renderAll();
     }
 
@@ -545,7 +526,6 @@ const Live: React.FC = () => {
 
         videoCanvas.setWidth(resolutionWidth)
         videoCanvas.setHeight(resolutionHeight)
-        console.log('initCanvas', { resolutionWidth, resolutionHeight });
         videoCanvas.setBackgroundColor('black');
         // // 创建矩形对象并添加到Canvas
         // const rect = new fabric.Rect({
