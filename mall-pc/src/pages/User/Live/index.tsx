@@ -444,7 +444,7 @@ const Live: React.FC = () => {
         rect?: { left: number; top: number };
         muted?: boolean;
     }) {
-        const videoEl = createVideo({ appendChild: false });
+        const videoEl = createVideo({ appendChild: true });
         if (muted !== undefined) {
             videoEl.muted = muted;
         }
@@ -495,15 +495,13 @@ const Live: React.FC = () => {
     }
 
     function renderAll() {
-        fabricCanvas.renderAll();
+        fabricCanvas.renderAll()
+        requestAnimationFrame(renderAll)
     }
 
     // 定时渲染画面
     function renderFrame() {
-        const delay = 1000 / 60; // 16.666666666666668
-        setInterval(() => {
-            renderAll();
-        }, delay);
+        renderAll()
     }
 
     // 关闭直播
@@ -527,15 +525,6 @@ const Live: React.FC = () => {
         videoCanvas.setWidth(resolutionWidth)
         videoCanvas.setHeight(resolutionHeight)
         videoCanvas.setBackgroundColor('black');
-        // // 创建矩形对象并添加到Canvas
-        // const rect = new fabric.Rect({
-        //     left: 50,
-        //     top: 50,
-        //     fill: 'red',
-        //     width: 200,
-        //     height: 200
-        // });
-        // videoCanvas.add(rect);
         setWrapSize({
             width: wrapWidth,
             height: wrapHeight
@@ -568,13 +557,6 @@ const Live: React.FC = () => {
             changeCanvasStyle()
         }
     }, [fabricCanvas])
-
-    useEffect(() => {
-        if (videoCtnRef.current) {
-            videoCtnRef.current.style.width = wrapSize.width + 'px'
-            videoCtnRef.current.style.height = wrapSize.height + 'px'
-        }
-    }, [wrapSize])
 
     return (
         <>

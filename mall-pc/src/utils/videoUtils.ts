@@ -1,6 +1,7 @@
 export const createVideo = ({
     muted = true,
     autoplay = true,
+    // 部分浏览器不插入元素无法播放
     appendChild = false,
   }) => {
     const videoEl = document.createElement('video')
