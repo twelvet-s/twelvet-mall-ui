@@ -4,9 +4,9 @@ import styles from './style.module.css'
 import { Row, Col, Divider } from 'antd'
 import BottomTool from './BottomTool'
 import RightTool from './RightTool'
-import Video from './Video'
 import { createVideo } from '../../../utils/videoUtils'
 import { fabric } from 'fabric'
+import LiveContext, { LiveStreamingMaterial } from './LiveContextProvider'
 
 const Live: React.FC = () => {
 
@@ -53,37 +53,23 @@ const Live: React.FC = () => {
     const [resolutionRatio, setResolutionRatio] = useState<1080 | 720>(1080)
 
     // 直播素材
-    const [liveStreamingMaterials, setLiveStreamingMaterials] = useState<{
-        title: string,
-    }[]>([
+    const [liveStreamingMaterials, setLiveStreamingMaterials] = useState<LiveStreamingMaterial[]>([
         {
+            id: '1',
+            disabled: false,
             title: '自行车自自行车自自行'
         },
         {
-            title: '自行车自自行车自自行'
-        },
-        {
-            title: '自行车自自行车自自行'
-        },
-        {
-            title: '自行车自自行车自自行'
-        },
-        {
-            title: '自行车自自行车自自行'
-        },
-        {
-            title: '自行车自自行车自自行'
-        },
-        {
-            title: '自行车自自行车自自行'
-        },
-        {
-            title: '自行车自自行车自自行'
-        },
-        {
+            id: '2',
+            disabled: true,
             title: '自行车自自行车自自行'
         },
     ])
+
+    // 处理直播素材
+    const handleLiveStreamingMaterials = (liveStreamingMaterials: { title: string }[]) => {
+        setLiveStreamingMaterials(liveStreamingMaterials)
+    }
 
     // 直播弹幕
     const [bulletList, setBulletList] = useState<{
@@ -135,7 +121,7 @@ const Live: React.FC = () => {
 
         // 添加流
         // @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addStream#Migrating_to_addTrack
-        videoRef.current.captureStream().getTracks().forEach(function (track: MediaStreamTrack) {
+        videoRef.current.captureStream().getTracks().forEach((track: MediaStreamTrack) => {
             rtcPeerConnection.addTrack(track)
 
             // Notify about local track when stream is ok.
@@ -170,6 +156,10 @@ const Live: React.FC = () => {
 
     }
 
+    // 监控渲染canvas
+    useEffect(() => {
+        console.log('重新渲染直播流')
+    }, [liveStreamingMaterials])
 
     // 开始直播
     const startLive = async () => {
@@ -318,7 +308,7 @@ const Live: React.FC = () => {
             //     videoEl.onloadedmetadata = () => {
             //         const width = event.getVideoTracks()[0].getSettings().width!
             //         const height = event.getVideoTracks()[0].getSettings().height!
-            //         const ratio = handleScale({ width, height })
+            //         const ratio = handleLcale({ width, height })
             //         videoEl.width = width
             //         videoEl.height = height
 
@@ -331,7 +321,7 @@ const Live: React.FC = () => {
             //         })
 
             //         // 处理缩放
-            //         handleScaling({ canvasDom, id: item.id });
+            //         handleLcaling({ canvasDom, id: item.id });
 
             //         canvasDom.scale(ratio / window.devicePixelRatio);
             //         // 将 Image 对象添加到 Fabric 画布中
@@ -377,7 +367,7 @@ const Live: React.FC = () => {
 
     }
 
-    function handleScale({ width, height }: { width: number; height: number }) {
+    const handleLcale = ({ width, height }: { width: number; height: number }) => {
         const resolutionHeight =
             resolutionRatios[3].value * window.devicePixelRatio;
         const resolutionWidth =
@@ -399,13 +389,13 @@ const Live: React.FC = () => {
     }
 
     // 处理移动记录坐标
-    function handleMoving({
+    const handleLoving = ({
         canvasDom,
         id,
     }: {
         canvasDom: fabric.Image | fabric.Text;
         id: string;
-    }) {
+    }) => {
         // 监控拖动canvas记录坐标
         canvasDom.on('moving', () => {
             console.log(
@@ -421,7 +411,7 @@ const Live: React.FC = () => {
     }
 
     // 处理缩放记录坐标
-    function handleScaling({ canvasDom, id }) {
+    const handleLcaling = ({ canvasDom, id }) => {
         canvasDom.on('scaling', () => {
             console.log(
                 'scaling',
@@ -433,7 +423,7 @@ const Live: React.FC = () => {
         });
     }
 
-    function autoCreateVideo({
+    const autoCreateVideo = ({
         stream,
         id,
         rect,
@@ -443,7 +433,7 @@ const Live: React.FC = () => {
         id: number;
         rect?: { left: number; top: number };
         muted?: boolean;
-    }) {
+    }) => {
         const videoEl = createVideo({ appendChild: true });
         if (muted !== undefined) {
             videoEl.muted = muted;
@@ -457,7 +447,7 @@ const Live: React.FC = () => {
             videoEl.onloadedmetadata = () => {
                 const width = stream.getVideoTracks()[0].getSettings().width!;
                 const height = stream.getVideoTracks()[0].getSettings().height!;
-                const ratio = handleScale({ width, height });
+                const ratio = handleLcale({ width, height });
                 videoEl.width = width;
                 videoEl.height = height;
 
@@ -468,8 +458,8 @@ const Live: React.FC = () => {
                     height,
                 })
 
-                handleMoving({ canvasDom, id });
-                handleScaling({ canvasDom, id });
+                handleLoving({ canvasDom, id });
+                handleLcaling({ canvasDom, id });
                 canvasDom.scale(ratio / window.devicePixelRatio);
                 fabricCanvas.add(canvasDom);
 
@@ -479,7 +469,7 @@ const Live: React.FC = () => {
     }
 
 
-    function changeCanvasStyle() {
+    const changeCanvasStyle = () => {
         // @ts-ignore
         fabricCanvas.wrapperEl.style.width = `${wrapSize.width}px`;
         // @ts-ignore
@@ -494,13 +484,13 @@ const Live: React.FC = () => {
         fabricCanvas.upperCanvasEl.style.height = `${wrapSize.height}px`;
     }
 
-    function renderAll() {
+    const renderAll = () => {
         fabricCanvas.renderAll()
         requestAnimationFrame(renderAll)
     }
 
     // 定时渲染画面
-    function renderFrame() {
+    const renderFrame = () => {
         renderAll()
     }
 
@@ -566,7 +556,6 @@ const Live: React.FC = () => {
                     <div className={styles.liveCtn}>
                         <div ref={videoCtnRef} className={styles.liveCtnVideo} >
                             <canvas ref={videoRef} id="videoCanvas"></canvas>
-                            {/* <Video ref={videoRef} /> */}
 
                         </div>
                         <div className={styles.liveCtnOption}>
@@ -576,7 +565,12 @@ const Live: React.FC = () => {
                 </Col>
                 <Col sm={6} xs={24}>
                     <div className={styles.rightTool}>
-                        <RightTool />
+                        <LiveContext.Provider value={{
+                            liveStreamingMaterials,
+                            handleLiveStreamingMaterials
+                        }}>
+                            <RightTool />
+                        </LiveContext.Provider>
                     </div>
                 </Col>
             </Row>
