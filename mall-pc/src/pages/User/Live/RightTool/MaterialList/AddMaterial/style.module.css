@@ -1,0 +1,22 @@
+.materialListCtn {
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    cursor: pointer;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 85px;
+}
+
+.icons {
+    color: #9499A0;
+    font-size: 28px;
+}
+
+.materialListCtn:hover, .materialListCtn:hover>.icons {
+    color: rgb(22, 119, 255);
+}
