@@ -178,7 +178,6 @@ const AddMateral: React.FC = () => {
                     {...formItemLayout}
                     label="添加本地图片"
                     name="picture"
-                    rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Upload
                         name="avatar"
@@ -298,6 +297,7 @@ const AddMateral: React.FC = () => {
                     <Form.Item
                         name="textStroke"
                         style={{ display: 'inline-block', width: 'calc(32% - 12px)' }}
+                        initialValue={0}
                     >
                         <Checkbox value={1}>
                             启用描边
@@ -356,7 +356,6 @@ const AddMateral: React.FC = () => {
                     {...formItemLayout}
                     label="多媒体文件"
                     name="video"
-                    rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Upload
                         name="avatar"
@@ -388,7 +387,6 @@ const AddMateral: React.FC = () => {
                     {...formItemLayout}
                     label="添加本地图片"
                     name="pictures"
-                    rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Upload
                         name="avatar"
@@ -447,8 +445,16 @@ const AddMateral: React.FC = () => {
 
     // 发送素材
     const handleSendtMaterial = () => {
-        setMaterialModal(false)
-        setMaterialSelectModal(false)
+        form.validateFields()
+            .then((fields) => {
+                console.log('========', fields)
+                setMaterialModal(false)
+                setMaterialSelectModal(false)
+            }).catch((e) => {
+                console.error(e);
+            });
+
+
     }
 
     return (
