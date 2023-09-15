@@ -11,31 +11,10 @@ const MateralList: React.FC = () => {
 
     const {
         liveStreamingMaterials,
-        handleLiveStreamingMaterials
+        handleLiveStreamingMaterials,
+        handleDeleteLiveStreamingMaterial,
+        handleVisibleLiveStreamingMaterial
     } = useContext(LiveContext as React.Context<LiveContextType>)
-
-    // 修改素材状态
-    const handleStatusLiveStreamingMaterial = (id: string) => {
-        const liveStreamingMaterialsFilter = liveStreamingMaterials.map((item: LiveStreamingMaterial) => {
-            if (item.id === id) {
-                item.disabled = !item.disabled
-            }
-            return item
-        })
-        handleLiveStreamingMaterials(liveStreamingMaterialsFilter)
-    }
-
-
-    // 添加素材
-    const handleAddLiveStreamingMaterial = () => {
-
-    }
-
-    // 删除素材
-    const handleDelLiveStreamingMaterial = (id: string) => {
-        const liveStreamingMaterialsFilter = liveStreamingMaterials.filter((item: LiveStreamingMaterial) => item.id !== id)
-        handleLiveStreamingMaterials(liveStreamingMaterialsFilter)
-    }
 
     return (
         <div className={styles.ctn}>
@@ -46,9 +25,9 @@ const MateralList: React.FC = () => {
                     <div className={styles.ctnListItem} key={item.id}>
                         <div className={styles.ctnListItemLeft}>
                             {
-                                item.disabled
-                                    ? <EyeInvisibleOutlined onClick={() => handleStatusLiveStreamingMaterial(item.id)} className={`${styles.marginRight10} ${styles.cursorPointer}`} /> :
-                                    <EyeOutlined onClick={() => handleStatusLiveStreamingMaterial(item.id)} className={`${styles.marginRight10} ${styles.cursorPointer}`} />
+                                item.visible
+                                    ? <EyeOutlined onClick={() => handleVisibleLiveStreamingMaterial(item.id)} className={`${styles.marginRight10} ${styles.cursorPointer}`} /> :
+                                    <EyeInvisibleOutlined onClick={() => handleVisibleLiveStreamingMaterial(item.id)} className={`${styles.marginRight10} ${styles.cursorPointer}`} />
                             }
                             <span className={`${styles.cursorPointer}`}>{item.title}</span>
                         </div>
@@ -57,7 +36,7 @@ const MateralList: React.FC = () => {
                             <Popconfirm
                                 title="删除素材"
                                 description="是否删除素材？"
-                                onConfirm={() => handleDelLiveStreamingMaterial(item.id)}
+                                onConfirm={() => handleDeleteLiveStreamingMaterial(item.id)}
                                 okText="是"
                                 cancelText="否"
                             >
@@ -75,7 +54,7 @@ const MateralList: React.FC = () => {
                     title="清空素材"
                     description="是否清空素材？"
                     onConfirm={() => {
-                        handleLiveStreamingMaterials([])
+                        handleDeleteLiveStreamingMaterial(0)
                     }}
                     okText="是"
                     cancelText="否"

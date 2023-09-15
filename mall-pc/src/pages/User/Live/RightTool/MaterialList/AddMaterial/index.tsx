@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { AudioOutlined, DesktopOutlined, FolderOpenOutlined, FolderViewOutlined, FontSizeOutlined, PictureOutlined, VideoCameraOutlined } from '@ant-design/icons'
 import { Button, Checkbox, ColorPicker, Form, Input, List, Modal, Select, Slider, Upload } from 'antd'
 import styles from './style.module.css'
 import { MaterialTypeEnum } from './interface'
+import LiveContext, { LiveContextType, LiveStreamingMaterial } from '../../../LiveContextProvider'
 
 
 // 添加素材
@@ -15,13 +16,18 @@ const AddMateral: React.FC = () => {
         wrapperCol: {
             sm: { span: 16 },
         },
-    };
+    }
+
+    const {
+        liveStreamingMaterials,
+        handleLiveStreamingMaterials
+    } = useContext(LiveContext as React.Context<LiveContextType>)
 
     // 选择直播素材
-    const [materialSelectModal, setMaterialSelectModal] = React.useState<boolean>(false)
+    const [materialSelectModal, setMaterialSelectModal] = useState<boolean>(false)
 
     // 当前素材组件类型
-    const [materialComponentType, setMaterialComponentType] = React.useState<string>()
+    const [materialComponentType, setMaterialComponentType] = useState<string>()
 
     // 素材列表
     const materialSelect = [
@@ -63,26 +69,34 @@ const AddMateral: React.FC = () => {
     ]
 
     // 填写直播素材信息
-    const [materialModal, setMaterialModal] = React.useState<boolean>(false)
+    const [materialModal, setMaterialModal] = useState<boolean>(false)
 
-    const [form] = Form.useForm<{ name: string; company: string }>()
+    const [form] = Form.useForm<{ title: string; company: string }>()
 
     // 处理选择的直播素材
     const genMaterial = () => {
+        const length = liveStreamingMaterials.length + 1
         switch (materialComponentType) {
             case MaterialTypeEnum.CAMERA:
+                form.setFieldValue('title', `摄像头 - ${length}`)
                 return camareMaterial()
             case MaterialTypeEnum.AUDIO:
+                form.setFieldValue('title', `音频 - ${length}`)
                 return audioMaterial()
             case MaterialTypeEnum.SCREEN:
+                form.setFieldValue('title', `屏幕 - ${length}`)
                 return screenMaterial()
             case MaterialTypeEnum.PICTURE:
+                form.setFieldValue('title', `图片 - ${length}`)
                 return pictureMaterial()
             case MaterialTypeEnum.TEXT:
+                form.setFieldValue('title', `文本 - ${length}`)
                 return textMaterial()
             case MaterialTypeEnum.VIDEO:
+                form.setFieldValue('title', `视频 - ${length}`)
                 return videoMaterial()
             case MaterialTypeEnum.FOLDER:
+                form.setFieldValue('title', `文件夹 - ${length}`)
                 return folderMaterial()
         }
     }
@@ -107,7 +121,7 @@ const AddMateral: React.FC = () => {
                 <Form.Item
                     {...formItemLayout}
                     label="来源命名"
-                    name="name"
+                    name="title"
                     rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Input placeholder="来源命名" />
@@ -136,7 +150,7 @@ const AddMateral: React.FC = () => {
                 <Form.Item
                     {...formItemLayout}
                     label="来源命名"
-                    name="name"
+                    name="title"
                     rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Input placeholder="来源命名" />
@@ -152,7 +166,7 @@ const AddMateral: React.FC = () => {
                 <Form.Item
                     {...formItemLayout}
                     label="来源命名"
-                    name="name"
+                    name="title"
                     rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Input placeholder="来源命名" />
@@ -168,7 +182,7 @@ const AddMateral: React.FC = () => {
                 <Form.Item
                     {...formItemLayout}
                     label="来源命名"
-                    name="name"
+                    name="title"
                     rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Input placeholder="来源命名" />
@@ -211,7 +225,7 @@ const AddMateral: React.FC = () => {
                 <Form.Item
                     {...formItemLayout}
                     label="来源命名"
-                    name="name"
+                    name="title"
                     rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Input placeholder="来源命名" />
@@ -346,7 +360,7 @@ const AddMateral: React.FC = () => {
                 <Form.Item
                     {...formItemLayout}
                     label="来源命名"
-                    name="name"
+                    name="title"
                     rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Input placeholder="来源命名" />
@@ -377,7 +391,7 @@ const AddMateral: React.FC = () => {
                 <Form.Item
                     {...formItemLayout}
                     label="来源命名"
-                    name="name"
+                    name="title"
                     rules={[{ required: true, message: '来源命名不能为空' }]}
                 >
                     <Input placeholder="来源命名" />
@@ -447,14 +461,72 @@ const AddMateral: React.FC = () => {
     const handleSendtMaterial = () => {
         form.validateFields()
             .then((fields) => {
-                console.log('========', fields)
+
+                switch (materialComponentType) {
+                    case MaterialTypeEnum.CAMERA:
+                        handleLiveStreamingMaterials({
+                            id: liveStreamingMaterials.length,
+                            type: MaterialTypeEnum.CAMERA,
+                            visible: true,
+                            title: fields.title
+                        })
+                        break
+                    case MaterialTypeEnum.AUDIO:
+                        handleLiveStreamingMaterials({
+                            id: liveStreamingMaterials.length,
+                            type: MaterialTypeEnum.AUDIO,
+                            visible: true,
+                            title: fields.title
+                        })
+                        break
+                    case MaterialTypeEnum.SCREEN:
+                        handleLiveStreamingMaterials({
+                            id: liveStreamingMaterials.length,
+                            type: MaterialTypeEnum.SCREEN,
+                            visible: true,
+                            title: fields.title
+                        })
+                        break
+                    case MaterialTypeEnum.PICTURE:
+                        handleLiveStreamingMaterials({
+                            id: liveStreamingMaterials.length,
+                            type: MaterialTypeEnum.PICTURE,
+                            visible: true,
+                            title: fields.title
+                        })
+                        break
+                    case MaterialTypeEnum.TEXT:
+                        handleLiveStreamingMaterials({
+                            id: liveStreamingMaterials.length,
+                            type: MaterialTypeEnum.TEXT,
+                            visible: true,
+                            title: fields.title
+                        })
+                        break
+                    case MaterialTypeEnum.VIDEO:
+                        handleLiveStreamingMaterials({
+                            id: liveStreamingMaterials.length,
+                            type: MaterialTypeEnum.VIDEO,
+                            visible: true,
+                            title: fields.title
+                        })
+                        break
+                    case MaterialTypeEnum.FOLDER:
+                        handleLiveStreamingMaterials({
+                            id: liveStreamingMaterials.length,
+                            type: MaterialTypeEnum.FOLDER,
+                            visible: true,
+                            title: fields.title
+                        })
+                        break
+                }
+
+                form.resetFields()
                 setMaterialModal(false)
                 setMaterialSelectModal(false)
             }).catch((e) => {
-                console.error(e);
-            });
-
-
+                console.error(e)
+            })
     }
 
     return (
