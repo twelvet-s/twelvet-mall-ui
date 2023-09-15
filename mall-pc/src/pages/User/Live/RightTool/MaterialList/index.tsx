@@ -11,7 +11,6 @@ const MateralList: React.FC = () => {
 
     const {
         liveStreamingMaterials,
-        handleLiveStreamingMaterials,
         handleDeleteLiveStreamingMaterial,
         handleVisibleLiveStreamingMaterial
     } = useContext(LiveContext as React.Context<LiveContextType>)

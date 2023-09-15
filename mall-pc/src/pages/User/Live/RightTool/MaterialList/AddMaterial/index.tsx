@@ -469,7 +469,7 @@ const AddMateral: React.FC = () => {
                             type: MaterialTypeEnum.CAMERA,
                             visible: true,
                             title: fields.title
-                        })
+                        }, 'add')
                         break
                     case MaterialTypeEnum.AUDIO:
                         handleLiveStreamingMaterials({
@@ -477,7 +477,7 @@ const AddMateral: React.FC = () => {
                             type: MaterialTypeEnum.AUDIO,
                             visible: true,
                             title: fields.title
-                        })
+                        }, 'add')
                         break
                     case MaterialTypeEnum.SCREEN:
                         handleLiveStreamingMaterials({
@@ -485,7 +485,7 @@ const AddMateral: React.FC = () => {
                             type: MaterialTypeEnum.SCREEN,
                             visible: true,
                             title: fields.title
-                        })
+                        }, 'add')
                         break
                     case MaterialTypeEnum.PICTURE:
                         handleLiveStreamingMaterials({
@@ -493,7 +493,7 @@ const AddMateral: React.FC = () => {
                             type: MaterialTypeEnum.PICTURE,
                             visible: true,
                             title: fields.title
-                        })
+                        }, 'add')
                         break
                     case MaterialTypeEnum.TEXT:
                         handleLiveStreamingMaterials({
@@ -501,7 +501,7 @@ const AddMateral: React.FC = () => {
                             type: MaterialTypeEnum.TEXT,
                             visible: true,
                             title: fields.title
-                        })
+                        }, 'add')
                         break
                     case MaterialTypeEnum.VIDEO:
                         handleLiveStreamingMaterials({
@@ -509,7 +509,7 @@ const AddMateral: React.FC = () => {
                             type: MaterialTypeEnum.VIDEO,
                             visible: true,
                             title: fields.title
-                        })
+                        }, 'add')
                         break
                     case MaterialTypeEnum.FOLDER:
                         handleLiveStreamingMaterials({
@@ -517,7 +517,7 @@ const AddMateral: React.FC = () => {
                             type: MaterialTypeEnum.FOLDER,
                             visible: true,
                             title: fields.title
-                        })
+                        }, 'add')
                         break
                 }
 

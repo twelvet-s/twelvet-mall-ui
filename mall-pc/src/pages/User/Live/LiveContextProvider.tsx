@@ -21,7 +21,7 @@ export type LiveStreamingMaterial = {
 export type LiveContextType = {
     liveStreamingMaterials: LiveStreamingMaterial[]
     // 增加素材
-    handleLiveStreamingMaterials: (liveStreamingMaterials: LiveStreamingMaterial) => void
+    handleLiveStreamingMaterials: (liveStreamingMaterials: LiveStreamingMaterial, type: 'update' | 'add') => void
     // 删除素材
     handleDeleteLiveStreamingMaterial: (id: number) => void
     // 修改显示状态

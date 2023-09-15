@@ -57,25 +57,38 @@ const Live: React.FC = () => {
     const [liveStreamingMaterials, setLiveStreamingMaterials] = useState<LiveStreamingMaterial[]>([])
 
     // 处理直播素材
-    const handleLiveStreamingMaterials = (liveStreamingMaterial: LiveStreamingMaterial) => {
-        // 生成canvas
-        genCanvas(liveStreamingMaterial).then(canvasData => {
-            // 保存媒体类型，用于删除
-            if (
-                liveStreamingMaterial.type === MaterialTypeEnum.SCREEN ||
-                liveStreamingMaterial.type === MaterialTypeEnum.AUDIO ||
-                liveStreamingMaterial.type === MaterialTypeEnum.VIDEO
-            ) {
-                liveStreamingMaterial.canvasDom = canvasData?.canvasDom
-                liveStreamingMaterial.videoEl = canvasData?.videoEl
-                liveStreamingMaterial.videoStream = canvasData?.videoStream
-            }
+    const handleLiveStreamingMaterials = (liveStreamingMaterial: LiveStreamingMaterial, type: 'update' | 'add') => {
+        if (type === 'add') {
+            // 生成canvas
+            genCanvas(liveStreamingMaterial).then(canvasData => {
+                // 保存媒体类型，用于删除
+                if (
+                    liveStreamingMaterial.type === MaterialTypeEnum.SCREEN ||
+                    liveStreamingMaterial.type === MaterialTypeEnum.AUDIO ||
+                    liveStreamingMaterial.type === MaterialTypeEnum.VIDEO
+                ) {
+                    liveStreamingMaterial.canvasDom = canvasData?.canvasDom
+                    liveStreamingMaterial.videoEl = canvasData?.videoEl
+                    liveStreamingMaterial.videoStream = canvasData?.videoStream
+                }
 
+                // 设置数据
+                setLiveStreamingMaterials([...liveStreamingMaterials, liveStreamingMaterial])
+            }).catch((err: Error) => {
+                console.error(err)
+            })
+        } else {
+            // 更新数据
+            const newLiveStreamingMaterials = liveStreamingMaterials.map(item => {
+                if (item.id === liveStreamingMaterial.id) {
+                    return liveStreamingMaterial
+                }
+                return item
+            })
             // 设置数据
-            setLiveStreamingMaterials([...liveStreamingMaterials, liveStreamingMaterial])
-        }).catch((err: Error) => {
-            console.error(err)
-        })
+            setLiveStreamingMaterials(newLiveStreamingMaterials)
+        }
+
 
     }
 
