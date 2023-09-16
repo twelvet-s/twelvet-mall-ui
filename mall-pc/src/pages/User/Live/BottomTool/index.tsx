@@ -1,12 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styles from './style.module.css'
 import { Button, Select } from 'antd'
 import { BugOutlined, EditOutlined, QuestionCircleOutlined, ShareAltOutlined } from '@ant-design/icons'
+import LiveContext, { LiveContextType } from '../LiveContextProvider'
 
 
 const BottomTool: React.FC<{
-    handleLiveStatus: (liveStatus: 1 | 2) => void
+    handleLiveStatus: () => void
+    liveStatus: 0 | 1 | 2
 }> = (props) => {
+
+    const {
+        handleBitrate,
+        handleResolutionRatio
+    } = useContext(LiveContext as React.Context<LiveContextType>)
 
     return (
         <>
@@ -60,6 +67,9 @@ const BottomTool: React.FC<{
                                     { value: 7000, label: '7000' },
                                     { value: 8000, label: '8000' },
                                 ]}
+                                onChange={(val: number) => {
+                                    handleBitrate!(val);
+                                }}
                             />
                         </div>
 
@@ -70,16 +80,23 @@ const BottomTool: React.FC<{
                                 defaultValue={1080}
                                 style={{ width: 120 }}
                                 options={[
+                                    { value: 360, label: '360P' },
+                                    { value: 540, label: '540P' },
                                     { value: 720, label: '720P' },
                                     { value: 1080, label: '1080P' },
                                 ]}
+                                onChange={(val: number) => {
+                                    handleResolutionRatio!(val);
+                                }}
                             />
                         </div>
                     </div>
 
                     <Button type='primary' onClick={() => {
-                        props.handleLiveStatus(1)
-                    }}>开始直播</Button>
+                        props.handleLiveStatus()
+                    }}>
+                        {(props.liveStatus === 0 || props.liveStatus === 2) ? '开始直播' : '关闭直播'}
+                    </Button>
                 </div>
             </div>
         </>

@@ -18,7 +18,7 @@
 
 .ctnList {
     width: 100%;
-    height: calc(320px - 30px);
+    height: calc(290px - 30px);
     overflow-y: auto;
 }
 

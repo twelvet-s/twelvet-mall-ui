@@ -19,13 +19,17 @@ export type LiveStreamingMaterial = {
 };
 
 export type LiveContextType = {
-    liveStreamingMaterials: LiveStreamingMaterial[]
+    liveStreamingMaterials?: LiveStreamingMaterial[]
     // 增加素材
-    handleLiveStreamingMaterials: (liveStreamingMaterials: LiveStreamingMaterial, type: 'update' | 'add') => void
+    handleLiveStreamingMaterials?: (liveStreamingMaterials: LiveStreamingMaterial, type: 'update' | 'add') => void
     // 删除素材
-    handleDeleteLiveStreamingMaterial: (id: number) => void
+    handleDeleteLiveStreamingMaterial?: (id: number) => void
     // 修改显示状态
-    handleVisibleLiveStreamingMaterial: (id: number) => void
+    handleVisibleLiveStreamingMaterial?: (id: number) => void
+    // 处理分辨率
+    handleResolutionRatio?: (currentRatio: number) => void
+    // 处理码率
+    handleBitrate?: (currentBitrate: number) => void
 }
 
 const LiveContext = React.createContext<LiveContextType | undefined>(undefined)

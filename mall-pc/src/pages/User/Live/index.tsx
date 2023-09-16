@@ -11,10 +11,13 @@ import { MaterialTypeEnum } from './RightTool/MaterialList/AddMaterial/interface
 
 const Live: React.FC = () => {
 
+    // 分辨率比例
+    const resolutionScale = 16 / 9
+
     const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas>()
 
     // WebRTC
-    const rtcPeerConnection = new RTCPeerConnection()
+    const [rtcPeerConnection, setRtcPeerConnection] = useState<RTCPeerConnection>()
 
     // 本地播放器容器
     const videoCtnRef = useRef<HTMLDivElement>(null)
@@ -34,24 +37,19 @@ const Live: React.FC = () => {
         height: 0,
     })
 
-    // 分辨率
-    const resolutionRatios = [
-        { value: 360, label: '360P' },
-        { value: 540, label: '540P' },
-        { value: 720, label: '720P' },
-        { value: 1080, label: '1080P' },
-    ]
+    // 当前码率
+    const [bitrate, setBitrate] = useState<number>(1000)
 
     // 设置直播状态
-    const handleLiveStatus = (liveStatus: 1 | 2) => {
-        setLiveStatus(liveStatus)
+    const handleLiveStatus = () => {
+        setLiveStatus((liveStatus === 0 || liveStatus === 2) ? 1 : 2)
     }
 
     // 播放码率
     const [playbackRate, setPlaybackRate] = useState<number>(4000)
 
     // 分辨率
-    const [resolutionRatio, setResolutionRatio] = useState<1080 | 720>(1080)
+    const [resolutionRatio, setResolutionRatio] = useState<number>(1080)
 
     // 直播素材
     const [liveStreamingMaterials, setLiveStreamingMaterials] = useState<LiveStreamingMaterial[]>([])
@@ -81,7 +79,7 @@ const Live: React.FC = () => {
             // 更新数据
             const newLiveStreamingMaterials = liveStreamingMaterials.map(item => {
                 if (item.id === liveStreamingMaterial.id) {
-                    return liveStreamingMaterial
+                    item.title = liveStreamingMaterial.title
                 }
                 return item
             })
@@ -103,6 +101,7 @@ const Live: React.FC = () => {
                     liveStreamingMaterial.type === MaterialTypeEnum.AUDIO ||
                     liveStreamingMaterial.type === MaterialTypeEnum.VIDEO
                 ) {
+                    fabricCanvas?.remove(liveStreamingMaterial.canvasDom!)
                     liveStreamingMaterial.videoEl?.remove()
                     liveStreamingMaterial.videoStream!.getTracks().forEach(track => {
                         track.stop();
@@ -169,23 +168,61 @@ const Live: React.FC = () => {
         },
     ])
 
+    // 设置最大码率
+    const setMaxBitrate = (maxBitrate: number) => {
+        return new Promise<number>((resolve) => {
+            rtcPeerConnection?.getSenders().forEach(s => {
+                console.log('sender.track')
+            })
+            rtcPeerConnection?.getSenders().forEach((sender) => {
+                console.log('sender.track')
+                if (sender.track?.kind === 'video') {
+                    console.log('设置最大码率ing', sender.track.id);
+                    const parameters = { ...sender.getParameters() };
+                    if (parameters.encodings[0]) {
+                        const val = 1000 * maxBitrate;
+                        if (parameters.encodings[0].maxBitrate === val) {
+                            console.log('最大码率不变，不设置');
+                            resolve(1);
+                            return;
+                        }
+                        parameters.encodings[0].maxBitrate = val;
+                        sender
+                            .setParameters(parameters)
+                            .then(() => {
+                                console.log('设置最大码率成功', maxBitrate);
+                                resolve(1);
+                            })
+                            .catch((error) => {
+                                console.error('设置最大码率失败', maxBitrate, error);
+                                resolve(0);
+                            });
+                    }
+                }
+            })
+        })
+    }
+
     // 使用webrtc发送数据
     const startScreenSharing = async () => {
-        rtcPeerConnection.addTransceiver("audio", { direction: "sendonly" })
-        rtcPeerConnection.addTransceiver("video", { direction: "sendonly" })
+        const newRtcPeerConnection = new RTCPeerConnection({ iceServers: [] })
+        setRtcPeerConnection(newRtcPeerConnection)
+
+        newRtcPeerConnection.addTransceiver("audio", { direction: "sendonly" })
+        newRtcPeerConnection.addTransceiver("video", { direction: "sendonly" })
 
         // 添加流
         // @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addStream#Migrating_to_addTrack
         videoRef.current!.captureStream().getTracks().forEach((track: MediaStreamTrack) => {
-            rtcPeerConnection.addTrack(track)
+            newRtcPeerConnection.addTrack(track, videoRef.current!.captureStream())
 
             // Notify about local track when stream is ok.
             //mediaStream.addTrack(track)
         })
 
         // 创建offer并设置本地
-        const offer = await rtcPeerConnection.createOffer()
-        await rtcPeerConnection.setLocalDescription(offer)
+        const offer = await newRtcPeerConnection.createOffer()
+        await newRtcPeerConnection.setLocalDescription(offer)
 
         // 发送数据
         const response: {
@@ -205,7 +242,7 @@ const Live: React.FC = () => {
 
 
         // 设置远程sdp
-        await rtcPeerConnection.setRemoteDescription(
+        await newRtcPeerConnection.setRemoteDescription(
             new RTCSessionDescription({ type: 'answer', sdp: response.sdp })
         )
 
@@ -360,11 +397,11 @@ const Live: React.FC = () => {
 
     const handleLcale = ({ width, height }: { width: number; height: number }) => {
         const resolutionHeight =
-            resolutionRatios[3].value * window.devicePixelRatio;
+            resolutionRatio * window.devicePixelRatio;
         const resolutionWidth =
-            resolutionRatios[3].value *
+            resolutionRatio *
             window.devicePixelRatio *
-            (16 / 9);
+            resolutionScale;
         let ratio = 1;
         if (width > resolutionWidth) {
             const r1 = resolutionWidth / width;
@@ -449,8 +486,6 @@ const Live: React.FC = () => {
                     height,
                 })
 
-                canvasDom.s
-
                 handleLoving({ canvasDom, id });
                 handleLcaling({ canvasDom, id });
                 canvasDom.scale(ratio / window.devicePixelRatio);
@@ -483,25 +518,25 @@ const Live: React.FC = () => {
 
     // 关闭直播
     const closeLive = () => {
-        alert('关闭直播')
+        rtcPeerConnection.close()
     }
 
     const init = () => {
         const resolutionHeight =
-            resolutionRatios[3].value / window.devicePixelRatio;
+            resolutionRatio / window.devicePixelRatio
         const resolutionWidth =
-            (resolutionRatios[3].value / window.devicePixelRatio) *
-            (16 / 9);
-        const wrapWidth = videoCtnRef.current!.getBoundingClientRect().width;
-        //const wrapWidth = 1920;
-        const ratio = wrapWidth / resolutionWidth;
-        const wrapHeight = resolutionHeight * ratio;
+            (resolutionRatio / window.devicePixelRatio) *
+            resolutionScale
+        const wrapWidth = videoCtnRef.current!.getBoundingClientRect().width
+        // const wrapWidth = 1920
+        const ratio = wrapWidth / resolutionWidth
+        const wrapHeight = resolutionHeight * ratio
         // 创建一个Canvas实例
         const videoCanvas = new fabric.Canvas(videoRef.current)
 
         videoCanvas.setWidth(resolutionWidth)
         videoCanvas.setHeight(resolutionHeight)
-        videoCanvas.setBackgroundColor('black');
+        videoCanvas.setBackgroundColor('black')
         setWrapSize({
             width: wrapWidth,
             height: wrapHeight
@@ -577,7 +612,72 @@ const Live: React.FC = () => {
 
                         </div>
                         <div className={styles.liveCtnOption}>
-                            <BottomTool handleLiveStatus={handleLiveStatus} />
+                            <LiveContext.Provider value={{
+                                // 处理素材
+                                handleResolutionRatio: (currentRatio: number) => {
+                                    const resolutionHeight =
+                                        currentRatio / window.devicePixelRatio
+                                    const resolutionWidth =
+                                        (currentRatio / window.devicePixelRatio) *
+                                        resolutionScale
+                                    fabricCanvas?.setWidth(resolutionWidth)
+                                    fabricCanvas?.setHeight(resolutionHeight)
+
+                                    liveStreamingMaterials.forEach((iten) => {
+                                        const item = iten.canvasDom;
+
+                                        if (item) {
+                                            // 分辨率变小了，将图片变小
+                                            if (currentRatio < resolutionRatio) {
+                                                const ratio2 = resolutionRatio / currentRatio;
+                                                item.left = item.left! / ratio2;
+                                                item.top = item.top! / ratio2;
+                                            } else {
+                                                // 分辨率变大了，将图片变大
+                                                const ratio2 = resolutionRatio / currentRatio;
+                                                item.left = item.left! / ratio2;
+                                                item.top = item.top! / ratio2;
+                                            }
+                                        }
+                                    });
+                                    liveStreamingMaterials.forEach((iten) => {
+                                        const item = iten.canvasDom;
+
+                                        if (item) {
+                                            // 分辨率变小了，将图片变小
+                                            if (currentRatio < resolutionRatio) {
+                                                const ratio = currentRatio / resolutionRatio;
+                                                const ratio1 = (item.scaleX || 1) * ratio;
+                                                item.scale(ratio1);
+                                            } else {
+                                                // 分辨率变大了，将图片变大
+                                                const ratio = currentRatio / resolutionRatio;
+                                                const ratio1 = (item.scaleX || 1) * ratio;
+                                                item.scale(ratio1);
+                                            }
+                                        }
+                                    });
+
+                                    changeCanvasStyle()
+                                    setResolutionRatio(currentRatio)
+                                },
+                                // 处理码率
+                                handleBitrate: (currentBitrate: number) => {
+                                    setMaxBitrate(currentBitrate).then(res => {
+                                        if (res === 1) {
+                                            console.log('切换码率成功！');
+                                            setBitrate(currentBitrate)
+                                        } else {
+                                            console.error('切换码率失败！');
+                                        }
+                                    }).catch(err => {
+                                        console.error(err)
+                                    })
+
+                                }
+                            }}>
+                                <BottomTool handleLiveStatus={handleLiveStatus} liveStatus={liveStatus} />
+                            </LiveContext.Provider>
                         </div>
                     </div>
                 </Col>
