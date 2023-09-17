@@ -32,7 +32,7 @@ const MateralModal: React.FC<{
 
     // 处理选择的直播素材
     const genMaterial = () => {
-        const length = liveStreamingMaterials.length + 1
+        const length = liveStreamingMaterials!.length + 1
         if (data) {
             switch (materialType) {
                 case MaterialTypeEnum.CAMERA:

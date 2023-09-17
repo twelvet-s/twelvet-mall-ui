@@ -16,7 +16,7 @@ export type LiveStreamingMaterial = {
     videoEl?: HTMLVideoElement
     // 视频流
     videoStream?: MediaStream
-};
+}
 
 export type LiveContextType = {
     liveStreamingMaterials?: LiveStreamingMaterial[]

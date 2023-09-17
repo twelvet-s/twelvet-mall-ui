@@ -45,9 +45,6 @@ const Live: React.FC = () => {
         setLiveStatus((liveStatus === 0 || liveStatus === 2) ? 1 : 2)
     }
 
-    // 播放码率
-    const [playbackRate, setPlaybackRate] = useState<number>(4000)
-
     // 分辨率
     const [resolutionRatio, setResolutionRatio] = useState<number>(1080)
 
