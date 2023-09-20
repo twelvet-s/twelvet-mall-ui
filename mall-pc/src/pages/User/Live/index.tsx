@@ -6,7 +6,7 @@ import BottomTool from './BottomTool'
 import RightTool from './RightTool'
 import { createVideo } from '../../../utils/videoUtils'
 import { fabric } from 'fabric'
-import LiveContext, { LiveStreamingMaterial } from './LiveContextProvider'
+import LiveContext, { GenCanvasData, LiveStreamingMaterial } from './LiveContextProvider'
 import { MaterialTypeEnum } from './RightTool/MaterialList/AddMaterial/interface'
 
 const Live: React.FC = () => {
@@ -37,6 +37,9 @@ const Live: React.FC = () => {
         height: 0,
     })
 
+    // 音频处理合成
+    const audioContext = new AudioContext()
+
     // 当前码率
     const [bitrate, setBitrate] = useState<number>(1000)
 
@@ -51,22 +54,26 @@ const Live: React.FC = () => {
     // 直播素材
     const [liveStreamingMaterials, setLiveStreamingMaterials] = useState<LiveStreamingMaterial[]>([])
 
+
+
     // 处理直播素材
     const handleLiveStreamingMaterials = (liveStreamingMaterial: LiveStreamingMaterial, type: 'update' | 'add') => {
         if (type === 'add') {
             // 生成canvas
-            genCanvas(liveStreamingMaterial).then(canvasData => {
+            genCanvas(liveStreamingMaterial).then((canvasData: GenCanvasData) => {
+
                 // 保存媒体类型，用于删除
+                liveStreamingMaterial.canvasDom = canvasData?.canvasDom
+                liveStreamingMaterial.scaleInfo = {}
                 if (
                     liveStreamingMaterial.type === MaterialTypeEnum.SCREEN ||
                     liveStreamingMaterial.type === MaterialTypeEnum.AUDIO ||
                     liveStreamingMaterial.type === MaterialTypeEnum.VIDEO
                 ) {
-                    liveStreamingMaterial.canvasDom = canvasData?.canvasDom
-                    liveStreamingMaterial.videoEl = canvasData?.videoEl
-                    liveStreamingMaterial.videoStream = canvasData?.videoStream
+                    liveStreamingMaterial.videoEl = canvasData.videoEl!
+                    liveStreamingMaterial.stream = canvasData.videoStream!
                 }
-
+                setScaleInfo(liveStreamingMaterial, 1)
                 // 设置数据
                 setLiveStreamingMaterials([...liveStreamingMaterials, liveStreamingMaterial])
             }).catch((err: Error) => {
@@ -100,7 +107,7 @@ const Live: React.FC = () => {
                 ) {
                     fabricCanvas?.remove(liveStreamingMaterial.canvasDom!)
                     liveStreamingMaterial.videoEl?.remove()
-                    liveStreamingMaterial.videoStream!.getTracks().forEach(track => {
+                    liveStreamingMaterial.stream!.getTracks().forEach(track => {
                         track.stop();
                     });
                 }
@@ -200,6 +207,58 @@ const Live: React.FC = () => {
         })
     }
 
+    // 设置缩放大小
+    const setScaleInfo = (
+        track: LiveStreamingMaterial,
+        scale = 1
+    ) => {
+        [1, 2, 3, 4].forEach((devicePixelRatio) => {
+            track.scaleInfo![devicePixelRatio] = {
+                scaleX: (1 / devicePixelRatio) * scale,
+                scaleY: (1 / devicePixelRatio) * scale,
+            };
+        })
+        if (window.devicePixelRatio !== 1) {
+            const ratio = (1 / window.devicePixelRatio) * scale;
+            track.canvasDom!.scale(ratio);
+            track.scaleInfo![window.devicePixelRatio] = {
+                scaleX: ratio,
+                scaleY: ratio,
+            }
+        }
+    }
+
+    // 处理视频/音频合流
+    const handleAudioMixedVideo = () => {
+        const allAudioTrack = liveStreamingMaterials.filter((item) => item.type === MaterialTypeEnum.AUDIO || item.type === MaterialTypeEnum.VIDEO)
+        // 控制音频的音量大小
+        const gainNode = audioContext.createGain()
+        allAudioTrack.forEach((item) => {
+            const audioInput = audioContext.createMediaStreamSource(item.stream!)
+            // 将GainNode与其他音频节点进行连接，以便对音频进行更复杂的处理
+            audioInput.connect(gainNode)
+        })
+        const destination = audioContext.createMediaStreamDestination()
+        gainNode.connect(destination)
+
+        const mediaStream = new MediaStream([
+            videoRef.current!.captureStream().getVideoTracks()[0],
+            destination.stream.getAudioTracks()[0]
+        ])
+
+        // const sender = rtcPeerConnection.peerConnection
+        //     ?.getSenders()
+        //     .find((sender) => sender.track?.id === resAudio.id);
+        // if (!sender) {
+        //     rtc.peerConnection
+        //         ?.getSenders()
+        //         ?.find((sender) => sender.track?.kind === 'audio')
+        //         ?.replaceTrack(resAudio);
+        // }
+
+        return mediaStream
+    }
+
     // 使用webrtc发送数据
     const startScreenSharing = async () => {
         const newRtcPeerConnection = new RTCPeerConnection({ iceServers: [] })
@@ -210,7 +269,7 @@ const Live: React.FC = () => {
 
         // 添加流
         // @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/addStream#Migrating_to_addTrack
-        videoRef.current!.captureStream().getTracks().forEach((track: MediaStreamTrack) => {
+        handleAudioMixedVideo().getTracks().forEach((track: MediaStreamTrack) => {
             newRtcPeerConnection.addTrack(track, videoRef.current!.captureStream())
 
             // Notify about local track when stream is ok.
@@ -247,14 +306,12 @@ const Live: React.FC = () => {
 
     // 添加摄像头
     const addCamera = async (data: LiveStreamingMaterial) => {
-        // // 开启共享桌面直播
-        const event = await navigator.mediaDevices.getDisplayMedia({
+        const event = await navigator.mediaDevices.getUserMedia({
             video: {
-                // 指定视频设备ID，留空表示使用默认设备
-                deviceId: "",
-                // displaySurface: 'monitor', // browser默认标签页;window默认窗口;monitor默认整个屏幕
+                deviceId: data.deviceId,
             },
-            audio: true,
+            // 禁用声音
+            audio: false,
         })
 
         // 生成视频流
@@ -268,23 +325,13 @@ const Live: React.FC = () => {
 
     // 添加音频
     const addAudio = async (data: LiveStreamingMaterial) => {
-        // // 开启共享桌面直播
-        const event = await navigator.mediaDevices.getDisplayMedia({
-            video: {
-                // 指定视频设备ID，留空表示使用默认设备
-                deviceId: "",
-                // displaySurface: 'monitor', // browser默认标签页;window默认窗口;monitor默认整个屏幕
-            },
-            audio: true,
+        const event = await navigator.mediaDevices.getUserMedia({
+            // 禁用视频
+            video: false,
+            audio: { deviceId: data.deviceId },
         })
 
-        // 生成视频流
-        const { canvasDom, videoEl, scale } = await autoCreateVideo({
-            stream: event,
-            id: data.id,
-        })
-
-        return { canvasDom, videoEl, videoStream: event }
+        return { videoStream: event }
     }
 
     // 添加窗口
@@ -296,7 +343,8 @@ const Live: React.FC = () => {
                 deviceId: "",
                 // displaySurface: 'monitor', // browser默认标签页;window默认窗口;monitor默认整个屏幕
             },
-            audio: true,
+            // 关闭声音
+            audio: false,
         })
 
         // 生成视频流
@@ -310,86 +358,134 @@ const Live: React.FC = () => {
 
     // 添加图片
     const addPicture = async (data: LiveStreamingMaterial) => {
-        // // 开启共享桌面直播
-        const event = await navigator.mediaDevices.getDisplayMedia({
-            video: {
-                // 指定视频设备ID，留空表示使用默认设备
-                deviceId: "",
-                // displaySurface: 'monitor', // browser默认标签页;window默认窗口;monitor默认整个屏幕
-            },
-            audio: true,
+        const imgEl = await new Promise<HTMLImageElement>((resolve) => {
+            const reader = new FileReader();
+            reader.addEventListener(
+                'load',
+                function () {
+                    const img = document.createElement('img');
+                    img.src = reader.result as string;
+                    img.onload = () => {
+                        resolve(img);
+                    }
+                },
+                false
+            )
+            reader.readAsDataURL(data.imageInfo?.picture.file)
+        })
+        const canvasDom = new fabric.Image(imgEl, {
+            top: 0,
+            left: 0,
+            width: imgEl.width,
+            height: imgEl.height,
         })
 
-        // 生成视频流
-        const { canvasDom, videoEl, scale } = await autoCreateVideo({
-            stream: event,
-            id: data.id,
-        })
+        handleMoving({ canvasDom, id: data.id })
+        handleScaling({ canvasDom, id: data.id })
+        fabricCanvas!.add(canvasDom)
 
-        return { canvasDom, videoEl, videoStream: event }
+        return { canvasDom }
     }
 
     // 添加文字
-    const addText = async (data: LiveStreamingMaterial) => {
-        // // 开启共享桌面直播
-        const event = await navigator.mediaDevices.getDisplayMedia({
-            video: {
-                // 指定视频设备ID，留空表示使用默认设备
-                deviceId: "",
-                // displaySurface: 'monitor', // browser默认标签页;window默认窗口;monitor默认整个屏幕
-            },
-            audio: true,
-        })
+    const addText = (data: LiveStreamingMaterial) => {
+        // 描边
+        let stroke = {}
+        if (data.textInfo?.textStroke) {
+            stroke = {
+                strokeWidth: data.textInfo?.textStrokeWeight,
+                stroke: data.textInfo?.textStrokeColor
+            }
+        }
 
-        // 生成视频流
-        const { canvasDom, videoEl, scale } = await autoCreateVideo({
-            stream: event,
-            id: data.id,
-        })
+        // 字体样式
+        let fontStyle = {}
+        if (data.textInfo?.fontStyle === 'italic') {
+            fontStyle = {
+                fontStyle: data.textInfo?.fontStyle
+            }
+        } else if (data.textInfo?.fontStyle === 'weight') {
+            fontStyle = {
+                fontWeight: 'bold'
+            }
+        } else if (data.textInfo?.fontStyle === 'italicAndWeight') {
+            fontStyle = {
+                fontStyle: 'italic',
+                fontWeight: 'bold'
+            }
+        }
 
-        return { canvasDom, videoEl, videoStream: event }
+        const canvasDom = new fabric.Text(data.textInfo!.text, {
+            top: 0,
+            left: 0,
+            fill: data.textInfo?.color,
+            fontSize: data.textInfo?.fontSize,
+            fontFamily: data.textInfo?.fontFamily,
+            opacity: data.textInfo!.opacity / 100,
+            // 字体样式
+            ...fontStyle,
+            // 描边
+            ...stroke
+        })
+        handleMoving({ canvasDom, id: data.id })
+        handleScaling({ canvasDom, id: data.id })
+
+        fabricCanvas!.add(canvasDom)
+
+        return { canvasDom }
     }
 
     // 添加媒体
     const addVideo = async (data: LiveStreamingMaterial) => {
-        // // 开启共享桌面直播
-        const event = await navigator.mediaDevices.getDisplayMedia({
-            video: {
-                // 指定视频设备ID，留空表示使用默认设备
-                deviceId: "",
-                // displaySurface: 'monitor', // browser默认标签页;window默认窗口;monitor默认整个屏幕
-            },
-            audio: true,
+        const url = URL.createObjectURL(data.videoInfo?.video.file)
+        const videoEl = createVideo({ muted: false, appendChild: true })
+        videoEl.src = url
+        videoEl.muted = false
+
+        const videoRes: HTMLVideoElement = await new Promise<HTMLVideoElement>((resolve) => {
+            videoEl.onloadedmetadata = () => {
+                resolve(videoEl)
+            }
         })
 
-        // 生成视频流
-        const { canvasDom, videoEl, scale } = await autoCreateVideo({
-            stream: event,
+        const stream = videoRes.captureStream()
+        const { canvasDom, scale } = await autoCreateVideo({
+            stream,
             id: data.id,
         })
 
-        return { canvasDom, videoEl, videoStream: event }
+        return { canvasDom, videoEl, videoStream: stream }
     }
 
     // 添加相册
     const addFolder = async (data: LiveStreamingMaterial) => {
-        // // 开启共享桌面直播
-        const event = await navigator.mediaDevices.getDisplayMedia({
-            video: {
-                // 指定视频设备ID，留空表示使用默认设备
-                deviceId: "",
-                // displaySurface: 'monitor', // browser默认标签页;window默认窗口;monitor默认整个屏幕
-            },
-            audio: true,
+        const imgEl = await new Promise<HTMLImageElement>((resolve) => {
+            const reader = new FileReader()
+            reader.addEventListener(
+                'load',
+                function () {
+                    const img = document.createElement('img');
+                    img.src = reader.result as string;
+                    img.onload = () => {
+                        resolve(img);
+                    }
+                },
+                false
+            )
+            reader.readAsDataURL(data.imageInfo?.picture.file)
+        })
+        const canvasDom = new fabric.Image(imgEl, {
+            top: 0,
+            left: 0,
+            width: imgEl.width,
+            height: imgEl.height,
         })
 
-        // 生成视频流
-        const { canvasDom, videoEl, scale } = await autoCreateVideo({
-            stream: event,
-            id: data.id,
-        })
+        handleMoving({ canvasDom, id: data.id })
+        handleScaling({ canvasDom, id: data.id })
+        fabricCanvas!.add(canvasDom)
 
-        return { canvasDom, videoEl, videoStream: event }
+        return { canvasDom }
     }
 
     const handleLcale = ({ width, height }: { width: number; height: number }) => {
@@ -414,7 +510,7 @@ const Live: React.FC = () => {
     }
 
     // 处理移动记录坐标
-    const handleLoving = ({
+    const handleMoving = ({
         canvasDom,
         id,
     }: {
@@ -436,7 +532,7 @@ const Live: React.FC = () => {
     }
 
     // 处理缩放记录坐标
-    const handleLcaling = ({ canvasDom, id }) => {
+    const handleScaling = ({ canvasDom, id }) => {
         canvasDom.on('scaling', () => {
             console.log(
                 'scaling',
@@ -448,7 +544,7 @@ const Live: React.FC = () => {
         });
     }
 
-    const autoCreateVideo = ({
+    const autoCreateVideo = async ({
         stream,
         id,
         rect,
@@ -464,6 +560,7 @@ const Live: React.FC = () => {
             videoEl.muted = muted;
         }
         videoEl.srcObject = stream;
+
         return new Promise<{
             canvasDom: fabric.Image;
             videoEl: HTMLVideoElement;
@@ -483,14 +580,14 @@ const Live: React.FC = () => {
                     height,
                 })
 
-                handleLoving({ canvasDom, id });
-                handleLcaling({ canvasDom, id });
+                handleMoving({ canvasDom, id });
+                handleScaling({ canvasDom, id });
                 canvasDom.scale(ratio / window.devicePixelRatio);
-                fabricCanvas!.insertAt(canvasDom, id, true);
+                fabricCanvas!.add(canvasDom);
 
                 resolve({ canvasDom, scale: ratio, videoEl });
             };
-        });
+        })
     }
 
 
@@ -511,6 +608,34 @@ const Live: React.FC = () => {
     // 定时渲染画面
     const renderFrame = () => {
         renderAll()
+    }
+
+    // 初始化用户摄像头/音频设备授权
+    const initUserMedia = () => {
+        navigator.mediaDevices
+            .getUserMedia({
+                video: true,
+                audio: false,
+            })
+            .then(() => {
+                console.log('初始化获取摄像头成功')
+            })
+            .catch(() => {
+                console.log('初始化获取摄像头失败')
+            })
+            .finally(() => {
+                navigator.mediaDevices
+                    .getUserMedia({
+                        video: false,
+                        audio: true,
+                    })
+                    .then(() => {
+                        console.log('初始化获取麦克风成功')
+                    })
+                    .catch(() => {
+                        console.log('初始化获取麦克风失败')
+                    });
+            });
     }
 
     // 关闭直播
@@ -545,11 +670,14 @@ const Live: React.FC = () => {
         liveStreamingMaterials.map((item: LiveStreamingMaterial) => {
             genCanvas(item)
         })
+
+        // 初始化用户摄像头/音频设备授权
+        initUserMedia()
     }
 
     // 生成canvas
     const genCanvas = async (data: LiveStreamingMaterial) => {
-        let canvasData
+        let canvasData: GenCanvasData
         switch (data.type) {
             case MaterialTypeEnum.CAMERA:
                 canvasData = await addCamera(data)
@@ -564,7 +692,7 @@ const Live: React.FC = () => {
                 canvasData = await addPicture(data)
                 break
             case MaterialTypeEnum.TEXT:
-                canvasData = await addText(data)
+                canvasData = addText(data)
                 break
             case MaterialTypeEnum.VIDEO:
                 canvasData = await addVideo(data)
@@ -572,6 +700,8 @@ const Live: React.FC = () => {
             case MaterialTypeEnum.FOLDER:
                 canvasData = await addFolder(data)
                 break
+            default:
+                throw new Error('类型错误')
         }
         return canvasData
     }
@@ -684,7 +814,27 @@ const Live: React.FC = () => {
                             liveStreamingMaterials,
                             handleLiveStreamingMaterials,
                             handleDeleteLiveStreamingMaterial,
-                            handleVisibleLiveStreamingMaterial
+                            handleVisibleLiveStreamingMaterial,
+                            // 处理音量
+                            handleVolume: (id: number, currentVolume: number) => {
+                                const liveStreamingMaterial = liveStreamingMaterials.find(item => item.id === id)
+                                liveStreamingMaterial!.volume = currentVolume
+
+                                liveStreamingMaterial!.videoEl!.volume = currentVolume / 100
+                                // const audioctx = new AudioContext();
+                                // // 加载音频资源
+                                // const audioSource = audioctx.createMediaStreamSource(liveStreamingMaterial!.stream!);
+
+                                // // 创建增益节点
+                                // const gainNode = audioctx.createGain()
+                                // // 连接音频源和增益节点
+                                // audioSource.connect(gainNode)
+
+                                // // 将增益节点连接到 AudioContext 的输出
+                                // gainNode.connect(audioctx.destination)
+
+                                // gainNode.gain.value = currentVolume / 100
+                            }
                         }}>
                             <RightTool />
                         </LiveContext.Provider>

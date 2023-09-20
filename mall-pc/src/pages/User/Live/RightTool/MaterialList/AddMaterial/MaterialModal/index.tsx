@@ -1,7 +1,9 @@
-import React, { useContext } from 'react'
-import { Checkbox, ColorPicker, Form, Input, Modal, Select, Slider, Upload } from 'antd'
+import React, { useContext, useEffect, useState } from 'react'
+import { Button, Checkbox, ColorPicker, Form, Input, Modal, Select, Slider, Upload, UploadFile, message } from 'antd'
 import { MaterialTypeEnum } from './../interface'
 import LiveContext, { LiveContextType, LiveStreamingMaterial } from '../../../../LiveContextProvider'
+import { UploadOutlined } from '@ant-design/icons'
+import { Color } from 'antd/lib/color-picker'
 
 
 // 添加素材
@@ -13,6 +15,8 @@ const MateralModal: React.FC<{
 }> = props => {
 
     const { open, data, materialType, close } = props
+
+    const [messageApi, contextHolder] = message.useMessage()
 
     const formItemLayout = {
         labelCol: {
@@ -28,7 +32,109 @@ const MateralModal: React.FC<{
         handleLiveStreamingMaterials
     } = useContext(LiveContext as React.Context<LiveContextType>)
 
-    const [form] = Form.useForm<{ title: string; company: string }>()
+    // 摄像头/音频设备列表
+    const [inputOptions, setInputOptions] = useState<{
+        label: string
+        value: string
+    }[]>([])
+
+    const [form] = Form.useForm<{
+        // 不透明度
+        opacity?: number
+
+        title: string
+        // 内容
+        text?: string
+        // 字体
+        fontFamily?: string
+        // 字体大小
+        fontSize?: number
+        // 字体风格
+        fontStyle?: "normal" | "italic" | "weight" | "italicAndWeight"
+        // 字体颜色
+        color?: string | Color
+        // 是否开启描边
+        textStroke?: [boolean]
+        // 描边颜色
+        textStrokeColor?: string | Color
+        // 描边大小
+        textStrokeWeight?: number
+
+
+        // 图片地址
+        picture?: {
+            file: File,
+            fileList: UploadFile[]
+        }
+        // 动画效果
+        animation?: string
+        // 放映时间
+        showTime?: number
+        // 过渡时间
+        transitionTime?: number
+
+        // 媒体地址
+        video?: File
+
+        // 摄像头/麦克风ID
+        deviceId?: string
+    }>()
+
+    // 初始化
+    const init = async () => {
+        if (materialType === MaterialTypeEnum.CAMERA) {
+            const enumerateDevices = await navigator.mediaDevices.enumerateDevices()
+            const mediaDevices: {
+                label: string
+                value: string
+            }[] = []
+            enumerateDevices.forEach((item) => {
+                if (item.kind === 'videoinput' && item.deviceId !== 'default') {
+                    mediaDevices.push({
+                        label: item.label,
+                        value: item.deviceId,
+                    })
+                }
+            })
+            if (mediaDevices.length === 0) {
+                void messageApi.open({
+                    type: 'warning',
+                    content: '设备列表为空，请检查该设备权限是否打开 _(•̀ᴗ•́ 」∠ ❀)_',
+                })
+                return
+            }
+            setInputOptions(mediaDevices)
+        } else if (materialType === MaterialTypeEnum.AUDIO) {
+            const enumerateDevices = await navigator.mediaDevices.enumerateDevices()
+            const mediaDevices: {
+                label: string
+                value: string
+            }[] = []
+            enumerateDevices.forEach((item) => {
+                if (item.kind === 'audioinput' && item.deviceId !== 'default') {
+                    mediaDevices.push({
+                        label: item.label,
+                        value: item.deviceId,
+                    })
+                }
+            })
+
+            if (mediaDevices.length === 0) {
+                void messageApi.open({
+                    type: 'warning',
+                    content: '设备列表为空，请检查该设备权限是否打开 _(•̀ᴗ•́ 」∠ ❀)_',
+                })
+                return
+            }
+            setInputOptions(mediaDevices)
+        }
+    }
+
+    useEffect(() => {
+        init().catch(e => {
+            console.log(e)
+        })
+    }, [materialType])
 
     // 处理选择的直播素材
     const genMaterial = () => {
@@ -36,34 +142,63 @@ const MateralModal: React.FC<{
         if (data) {
             switch (materialType) {
                 case MaterialTypeEnum.CAMERA:
-                    form.setFieldsValue(data)
+                    form.setFieldsValue({
+                        title: data.title,
+                        deviceId: data.deviceId
+                    })
                     return camareMaterial()
                 case MaterialTypeEnum.AUDIO:
-                    form.setFieldsValue(data)
+                    form.setFieldsValue({
+                        title: data.title,
+                        deviceId: data.deviceId
+                    })
                     return audioMaterial()
                 case MaterialTypeEnum.SCREEN:
-                    form.setFieldsValue(data)
+                    form.setFieldsValue({
+                        title: data.title
+                    })
                     return screenMaterial()
                 case MaterialTypeEnum.PICTURE:
-                    form.setFieldsValue(data)
+                    console.log('=============', data.imageInfo?.picture)
+                    form.setFieldsValue({
+                        ...data.imageInfo,
+                        title: data.title,
+                        picture: data.imageInfo?.picture.fileList
+                    })
                     return pictureMaterial()
                 case MaterialTypeEnum.TEXT:
-                    form.setFieldsValue(data)
+                    form.setFieldsValue({
+                        ...data.textInfo,
+                        title: data.title
+                    })
                     return textMaterial()
                 case MaterialTypeEnum.VIDEO:
-                    form.setFieldsValue(data)
+                    form.setFieldsValue({
+                        ...data.videoInfo,
+                        title: data.title,
+                        picture: data.imageInfo?.picture.fileList
+                    })
                     return videoMaterial()
                 case MaterialTypeEnum.FOLDER:
-                    form.setFieldsValue(data)
+                    form.setFieldsValue({
+                        title: data.title,
+                        picture: data.imageInfo?.picture.fileList
+                    })
                     return folderMaterial()
             }
         } else {
             switch (materialType) {
                 case MaterialTypeEnum.CAMERA:
-                    form.setFieldValue('title', `摄像头 - ${length}`)
+                    form.setFieldsValue({
+                        title: `摄像头 - ${length}`,
+                        deviceId: inputOptions[0] ? inputOptions[0].value : undefined
+                    })
                     return camareMaterial()
                 case MaterialTypeEnum.AUDIO:
-                    form.setFieldValue('title', `音频 - ${length}`)
+                    form.setFieldsValue({
+                        title: `音频 - ${length}`,
+                        deviceId: inputOptions[0] ? inputOptions[0].value : undefined
+                    })
                     return audioMaterial()
                 case MaterialTypeEnum.SCREEN:
                     form.setFieldValue('title', `屏幕 - ${length}`)
@@ -92,13 +227,12 @@ const MateralModal: React.FC<{
                 <Form.Item
                     {...formItemLayout}
                     label="设备选择"
-                    name="camare"
-                    rules={[{ required: true, message: '内容为空' }]}
+                    name="deviceId"
+                    rules={[{ required: true, message: '设备为空' }]}
                 >
                     <Select
-                        defaultValue="lucy"
                         allowClear
-                        options={[{ value: 'lucy', label: '微软雅黑' }]}
+                        options={inputOptions}
                     />
                 </Form.Item>
 
@@ -121,13 +255,12 @@ const MateralModal: React.FC<{
                 <Form.Item
                     {...formItemLayout}
                     label="设备选择"
-                    name="audio"
-                    rules={[{ required: true, message: '内容为空' }]}
+                    name="deviceId"
+                    rules={[{ required: true, message: '设备为空' }]}
                 >
                     <Select
-                        defaultValue="lucy"
                         allowClear
-                        options={[{ value: 'lucy', label: '微软雅黑' }]}
+                        options={inputOptions}
                     />
                 </Form.Item>
 
@@ -175,15 +308,17 @@ const MateralModal: React.FC<{
                 <Form.Item
                     {...formItemLayout}
                     label="添加本地图片"
+                    rules={[{ required: true, message: '请选择文件' }]}
                     name="picture"
                 >
                     <Upload
-                        name="avatar"
-                        listType="picture-card"
-                        className="avatar-uploader"
-                        showUploadList={false}
-                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        accept='.jpg,.jpeg,.png,.gif'
+                        name="file"
+                        multiple={false}
+                        beforeUpload={() => false}
+                        maxCount={1}
                     >
+                        <Button icon={<UploadOutlined />}>选择文件</Button>
                     </Upload>
                 </Form.Item>
 
@@ -233,7 +368,6 @@ const MateralModal: React.FC<{
                         initialValue={'Microsoft YaHei'}
                     >
                         <Select
-                            defaultValue="lucy"
                             style={{ width: 95 }}
                             allowClear
                             options={[{ value: 'Microsoft YaHei', label: '微软雅黑' }]}
@@ -266,13 +400,13 @@ const MateralModal: React.FC<{
                     <Form.Item
                         name="fontStyle"
                         style={{ display: 'inline-block', width: 'calc(30% - 5px)' }}
-                        initialValue={12}
+                        initialValue={'normal'}
                     >
                         <Select
                             style={{ width: 82 }}
                             allowClear
                             options={[
-                                { value: 'default', label: '默认' },
+                                { value: 'normal', label: '默认' },
                                 { value: 'italic', label: '斜体' },
                                 { value: 'weight', label: '粗体' },
                                 { value: 'italicAndWeight', label: '粗斜体' }
@@ -294,17 +428,20 @@ const MateralModal: React.FC<{
                 >
                     <Form.Item
                         name="textStroke"
-                        style={{ display: 'inline-block', width: 'calc(32% - 12px)' }}
-                        initialValue={0}
+                        style={{ display: 'inline-block', width: 'calc(35% - 12px)' }}
+                        initialValue={[false]}
                     >
-                        <Checkbox value={1}>
-                            启用描边
-                        </Checkbox>
+                        <Checkbox.Group>
+                            <Checkbox value={true}>
+                                启用描边
+                            </Checkbox>
+                        </Checkbox.Group>
+
                     </Form.Item>
 
                     <Form.Item
                         name="textStrokeColor"
-                        style={{ display: 'inline-block', width: 'calc(32% - 12px)' }}
+                        style={{ display: 'inline-block', width: 'calc(29% - 12px)' }}
                         initialValue={'#ffffff'}
                     >
                         <ColorPicker />
@@ -356,12 +493,13 @@ const MateralModal: React.FC<{
                     name="video"
                 >
                     <Upload
-                        name="avatar"
-                        listType="picture-card"
-                        className="avatar-uploader"
-                        showUploadList={false}
-                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        accept='.mp4,.avi,.mov'
+                        name="file"
+                        multiple={false}
+                        beforeUpload={() => false}
+                        maxCount={1}
                     >
+                        <Button icon={<UploadOutlined />}>选择文件</Button>
                     </Upload>
                 </Form.Item>
             </>
@@ -384,15 +522,16 @@ const MateralModal: React.FC<{
                 <Form.Item
                     {...formItemLayout}
                     label="添加本地图片"
+                    rules={[{ required: true, message: '请选择文件' }]}
                     name="pictures"
                 >
                     <Upload
-                        name="avatar"
-                        listType="picture-card"
-                        className="avatar-uploader"
-                        showUploadList={false}
-                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        accept='.jpg,.jpeg,.png,.gif'
+                        name="file"
+                        multiple={true}
+                        beforeUpload={() => false}
                     >
+                        <Button icon={<UploadOutlined />}>选择文件</Button>
                     </Upload>
                 </Form.Item>
 
@@ -416,8 +555,8 @@ const MateralModal: React.FC<{
 
                 <Form.Item
                     {...formItemLayout}
-                    label="showTime "
-                    name="name"
+                    label="放映时间"
+                    name="showTime"
                     initialValue={3000}
                 >
                     <Slider
@@ -460,7 +599,8 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.CAMERA,
                             visible: true,
-                            title: fields.title
+                            title: fields.title,
+                            deviceId: fields.deviceId
                         }, type)
                         break
                     case MaterialTypeEnum.AUDIO:
@@ -468,7 +608,8 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.AUDIO,
                             visible: true,
-                            title: fields.title
+                            title: fields.title,
+                            deviceId: fields.deviceId
                         }, type)
                         break
                     case MaterialTypeEnum.SCREEN:
@@ -484,15 +625,47 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.PICTURE,
                             visible: true,
-                            title: fields.title
+                            title: fields.title,
+                            imageInfo: {
+                                // 图片地址
+                                picture: fields.picture!,
+                                // 不透明度
+                                opacity: fields.opacity!,
+                            }
                         }, type)
                         break
                     case MaterialTypeEnum.TEXT:
+                        if (typeof fields.color === 'object') {
+                            fields.color = fields.color.toHexString()
+                        }
+                        if (typeof fields.textStrokeColor === 'object') {
+                            fields.textStrokeColor = fields.textStrokeColor.toHexString()
+                        }
                         handleLiveStreamingMaterials!({
                             id: idVal,
                             type: MaterialTypeEnum.TEXT,
                             visible: true,
-                            title: fields.title
+                            title: fields.title,
+                            textInfo: {
+                                // 内容
+                                text: fields.text!,
+                                // 字体
+                                fontFamily: fields.fontFamily!,
+                                // 字体大小
+                                fontSize: fields.fontSize!,
+                                // 字体风格
+                                fontStyle: fields.fontStyle!,
+                                // 字体颜色
+                                color: fields.color!,
+                                // 是否开启描边
+                                textStroke: fields.textStroke![0],
+                                // 描边颜色
+                                textStrokeColor: fields.textStrokeColor!,
+                                // 描边大小
+                                textStrokeWeight: fields.textStrokeWeight!,
+                                // 不透明度
+                                opacity: fields.opacity!
+                            }
                         }, type)
                         break
                     case MaterialTypeEnum.VIDEO:
@@ -500,7 +673,11 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.VIDEO,
                             visible: true,
-                            title: fields.title
+                            title: fields.title,
+                            videoInfo: {
+                                // 媒体地址
+                                video: fields.video!
+                            }
                         }, type)
                         break
                     case MaterialTypeEnum.FOLDER:
@@ -508,38 +685,58 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.FOLDER,
                             visible: true,
-                            title: fields.title
+                            title: fields.title,
+                            imageInfo: {
+                                // 图片地址
+                                picture: fields.picture!,
+                                // 不透明度
+                                opacity: fields.opacity!,
+                                // 动画效果
+                                animation: fields.animation!,
+                                // 放映时间
+                                showTime: fields.showTime!,
+                                // 过渡时间
+                                transitionTime: fields.transitionTime!,
+                            }
                         }, type)
                         break
                 }
-
-                form.resetFields()
-                close()
+                handleClose()
             }).catch((e) => {
                 console.error(e)
             })
     }
 
-    return (
-        <Modal
-            open={open}
-            title={'添加直播素材'}
-            centered={true}
-            onOk={() => {
-                handleSendtMaterial()
+    const handleClose = () => {
+        form.resetFields()
+        setInputOptions([])
+        close()
+    }
 
-            }}
-            onCancel={() => {
-                form.resetFields()
-                close()
-            }}
-            okText={'发送'}
-            cancelText={'取消'}
-        >
-            <Form name="material" form={form}>
-                {genMaterial()}
-            </Form>
-        </Modal>
+    return (
+        <>
+            <Modal
+                open={open}
+                title={'添加直播素材'}
+                centered={true}
+                onOk={() => {
+                    handleSendtMaterial()
+                }}
+                onCancel={() => {
+                    handleClose()
+                }}
+                okText={'发送'}
+                cancelText={'取消'}
+            >
+                <Form
+                    name="material"
+                    form={form}
+                >
+                    {genMaterial()}
+                </Form>
+            </Modal>
+            {contextHolder}
+        </>
     )
 }
 

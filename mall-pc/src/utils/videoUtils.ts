@@ -30,36 +30,3 @@ export const createVideo = ({
     return videoEl
 }
   
-export function videoToCanvas(data: { videoEl: HTMLVideoElement }) {
-    const { videoEl } = data
-    if (!videoEl) {
-      throw new Error('videoEl不能为空！')
-    }
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')!
-  
-    let timer
-    let w = videoEl.videoWidth
-    let h = videoEl.videoHeight
-    function handleResize() {
-      w = videoEl.videoWidth
-      h = videoEl.videoHeight
-    }
-    videoEl.addEventListener('resize', handleResize)
-    function drawCanvas() {
-      canvas.width = w
-      canvas.height = h
-      ctx.drawImage(videoEl, 0, 0, w, h)
-      timer = requestAnimationFrame(drawCanvas)
-    }
-  
-    function stopDrawing() {
-      videoEl.removeEventListener('resize', handleResize)
-      cancelAnimationFrame(timer)
-    }
-  
-    drawCanvas()
-  
-    return { drawCanvas, stopDrawing, canvas }
-}
-  

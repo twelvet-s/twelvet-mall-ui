@@ -34,11 +34,12 @@
 }
 
 .ctnListItemLeft {
-    flex: 8;
+    flex: 7;
 }
 
 .ctnListItemRight {
-    flex: 2;
+    flex: 3;
+    text-align: right;
 }
 
 /* 控制器区域 */
