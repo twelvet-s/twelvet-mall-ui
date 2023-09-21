@@ -81,36 +81,24 @@ const Live: React.FC = () => {
             })
         } else {
             // 更新数据
-            const newLiveStreamingMaterials = liveStreamingMaterials.map(item => {
-                if (item.id === liveStreamingMaterial.id) {
-                    item.title = liveStreamingMaterial.title
-                }
-                return item
+            const material = liveStreamingMaterials.find(item => {
+                return item.id === liveStreamingMaterial.id
             })
-            // 设置数据
-            setLiveStreamingMaterials(newLiveStreamingMaterials)
+
+            material!.title = liveStreamingMaterial.title
         }
-
-
     }
 
     // 删除直播素材，ID为0时全部删除
     const handleDeleteLiveStreamingMaterial = (id: number) => {
         const newLiveStreamingMaterials = liveStreamingMaterials.filter(liveStreamingMaterial => {
             if (id === 0 || liveStreamingMaterial.id === id) {
-                fabricCanvas!.remove(liveStreamingMaterial.canvasDom!)
-                // 移除视频video节点并关闭流
-                if (
-                    liveStreamingMaterial.type === MaterialTypeEnum.SCREEN ||
-                    liveStreamingMaterial.type === MaterialTypeEnum.AUDIO ||
-                    liveStreamingMaterial.type === MaterialTypeEnum.VIDEO
-                ) {
-                    fabricCanvas?.remove(liveStreamingMaterial.canvasDom!)
-                    liveStreamingMaterial.videoEl?.remove()
-                    liveStreamingMaterial.stream!.getTracks().forEach(track => {
-                        track.stop();
-                    });
-                }
+                // 关闭流，DOM
+                fabricCanvas?.remove(liveStreamingMaterial.canvasDom!)
+                liveStreamingMaterial.videoEl?.remove()
+                liveStreamingMaterial.stream!.getTracks().forEach(track => {
+                    track.stop();
+                })
             }
             return id !== 0 && liveStreamingMaterial.id !== id
         })
@@ -119,14 +107,13 @@ const Live: React.FC = () => {
 
     // 修改canvas状态
     const handleVisibleLiveStreamingMaterial = (id: number) => {
-        const newLiveStreamingMaterials = liveStreamingMaterials.filter(liveStreamingMaterial => {
-            if (liveStreamingMaterial.id === id) {
-                liveStreamingMaterial.visible = !liveStreamingMaterial.visible
-                liveStreamingMaterial.canvasDom!.visible = liveStreamingMaterial.visible
-            }
-            return liveStreamingMaterial
+        // 更新数据
+        const liveStreamingMaterial = liveStreamingMaterials.find(item => {
+            return item.id === id
         })
-        setLiveStreamingMaterials(newLiveStreamingMaterials)
+
+        liveStreamingMaterial!.visible = !liveStreamingMaterial!.visible
+        liveStreamingMaterial!.canvasDom!.visible = liveStreamingMaterial!.visible
     }
 
     // 直播弹幕
@@ -235,26 +222,31 @@ const Live: React.FC = () => {
         const gainNode = audioContext.createGain()
         allAudioTrack.forEach((item) => {
             const audioInput = audioContext.createMediaStreamSource(item.stream!)
+            // 调节音量
+            gainNode.gain.value = (item.volume || 100) / 100
             // 将GainNode与其他音频节点进行连接，以便对音频进行更复杂的处理
             audioInput.connect(gainNode)
         })
         const destination = audioContext.createMediaStreamDestination()
         gainNode.connect(destination)
 
+
         const mediaStream = new MediaStream([
             videoRef.current!.captureStream().getVideoTracks()[0],
             destination.stream.getAudioTracks()[0]
         ])
 
-        // const sender = rtcPeerConnection.peerConnection
-        //     ?.getSenders()
-        //     .find((sender) => sender.track?.id === resAudio.id);
-        // if (!sender) {
-        //     rtc.peerConnection
-        //         ?.getSenders()
-        //         ?.find((sender) => sender.track?.kind === 'audio')
-        //         ?.replaceTrack(resAudio);
-        // }
+        // 替换流
+        const resAudio = destination.stream.getAudioTracks()[0]
+        const sender = rtcPeerConnection?.getSenders()
+            .find((sender) => sender.track?.id === resAudio.id)
+        if (!sender) {
+            // 替换音频流
+            rtcPeerConnection?.getSenders().find(sender => sender.track?.kind === 'audio')
+                ?.replaceTrack(resAudio).catch(e => {
+                    console.log('替换WebRTC流失败', e)
+                })
+        }
 
         return mediaStream
     }
@@ -378,6 +370,7 @@ const Live: React.FC = () => {
             left: 0,
             width: imgEl.width,
             height: imgEl.height,
+            opacity: data.imageInfo!.opacity! / 100,
         })
 
         handleMoving({ canvasDom, id: data.id })
@@ -821,6 +814,8 @@ const Live: React.FC = () => {
                                 liveStreamingMaterial!.volume = currentVolume
 
                                 liveStreamingMaterial!.videoEl!.volume = currentVolume / 100
+
+                                handleAudioMixedVideo()
                                 // const audioctx = new AudioContext();
                                 // // 加载音频资源
                                 // const audioSource = audioctx.createMediaStreamSource(liveStreamingMaterial!.stream!);
