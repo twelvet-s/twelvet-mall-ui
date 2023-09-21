@@ -599,6 +599,10 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.CAMERA,
                             visible: true,
+                            rect: {
+                                top: 0,
+                                left: 0
+                            },
                             title: fields.title,
                             deviceId: fields.deviceId
                         }, type)
@@ -608,6 +612,10 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.AUDIO,
                             visible: true,
+                            rect: {
+                                top: 0,
+                                left: 0
+                            },
                             title: fields.title,
                             deviceId: fields.deviceId
                         }, type)
@@ -617,6 +625,10 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.SCREEN,
                             visible: true,
+                            rect: {
+                                top: 0,
+                                left: 0
+                            },
                             title: fields.title
                         }, type)
                         break
@@ -625,6 +637,10 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.PICTURE,
                             visible: true,
+                            rect: {
+                                top: 0,
+                                left: 0
+                            },
                             title: fields.title,
                             imageInfo: {
                                 // 图片地址
@@ -645,6 +661,10 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.TEXT,
                             visible: true,
+                            rect: {
+                                top: 0,
+                                left: 0
+                            },
                             title: fields.title,
                             textInfo: {
                                 // 内容
@@ -673,6 +693,10 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.VIDEO,
                             visible: true,
+                            rect: {
+                                top: 0,
+                                left: 0
+                            },
                             title: fields.title,
                             videoInfo: {
                                 // 媒体地址
@@ -685,6 +709,10 @@ const MateralModal: React.FC<{
                             id: idVal,
                             type: MaterialTypeEnum.FOLDER,
                             visible: true,
+                            rect: {
+                                top: 0,
+                                left: 0
+                            },
                             title: fields.title,
                             imageInfo: {
                                 // 图片地址

@@ -72,6 +72,8 @@ export type LiveStreamingMaterial = {
             fileList: UploadFile[]
         }
     }
+    // 素材位置
+    rect: { top: number; left: number }
     scaleInfo?: Record<number, { scaleX: number; scaleY: number }>
 }
 

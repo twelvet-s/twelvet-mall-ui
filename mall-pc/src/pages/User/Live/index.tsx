@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-
 import styles from './style.module.css'
 import { Row, Col, Divider } from 'antd'
 import BottomTool from './BottomTool'
@@ -54,7 +53,8 @@ const Live: React.FC = () => {
     // 直播素材
     const [liveStreamingMaterials, setLiveStreamingMaterials] = useState<LiveStreamingMaterial[]>([])
 
-
+    // 直播存储
+    const liveStreamingMaterialLocalStorage = "liveStreamingMaterials"
 
     // 处理直播素材
     const handleLiveStreamingMaterials = (liveStreamingMaterial: LiveStreamingMaterial, type: 'update' | 'add') => {
@@ -65,6 +65,7 @@ const Live: React.FC = () => {
                 // 保存媒体类型，用于删除
                 liveStreamingMaterial.canvasDom = canvasData?.canvasDom
                 liveStreamingMaterial.scaleInfo = {}
+                console.log('=============', liveStreamingMaterial)
                 if (
                     liveStreamingMaterial.type === MaterialTypeEnum.SCREEN ||
                     liveStreamingMaterial.type === MaterialTypeEnum.AUDIO ||
@@ -366,8 +367,8 @@ const Live: React.FC = () => {
             reader.readAsDataURL(data.imageInfo?.picture.file)
         })
         const canvasDom = new fabric.Image(imgEl, {
-            top: 0,
-            left: 0,
+            top: (data.rect?.top || 0) / window.devicePixelRatio,
+            left: (data.rect?.left || 0) / window.devicePixelRatio,
             width: imgEl.width,
             height: imgEl.height,
             opacity: data.imageInfo!.opacity! / 100,
@@ -409,8 +410,8 @@ const Live: React.FC = () => {
         }
 
         const canvasDom = new fabric.Text(data.textInfo!.text, {
-            top: 0,
-            left: 0,
+            top: (data.rect?.top || 0) / window.devicePixelRatio,
+            left: (data.rect?.left || 0) / window.devicePixelRatio,
             fill: data.textInfo?.color,
             fontSize: data.textInfo?.fontSize,
             fontFamily: data.textInfo?.fontFamily,
@@ -468,8 +469,8 @@ const Live: React.FC = () => {
             reader.readAsDataURL(data.imageInfo?.picture.file)
         })
         const canvasDom = new fabric.Image(imgEl, {
-            top: 0,
-            left: 0,
+            top: (data.rect?.top || 0) / window.devicePixelRatio,
+            left: (data.rect?.left || 0) / window.devicePixelRatio,
             width: imgEl.width,
             height: imgEl.height,
         })
@@ -512,14 +513,12 @@ const Live: React.FC = () => {
     }) => {
         // 监控拖动canvas记录坐标
         canvasDom.on('moving', () => {
-            console.log(
-                'moving',
-                canvasDom.width,
-                canvasDom.height,
-                canvasDom.scaleX,
-                canvasDom.scaleY
-            );
-            console.log(`TOP: ${canvasDom.top}, Left ${canvasDom.left}`)
+            const liveStreamingMaterial = liveStreamingMaterials.find(item => item.id === id)
+            console.log('===========', liveStreamingMaterial)
+            liveStreamingMaterial!.rect = {
+                top: (canvasDom.top || 0) * window.devicePixelRatio,
+                left: (canvasDom.left || 0) * window.devicePixelRatio,
+            };
         });
 
     }
@@ -657,15 +656,38 @@ const Live: React.FC = () => {
             height: wrapHeight
         })
         setFabricCanvas(videoCanvas)
+    }
 
+    // 从本地恢复用户直播
+    const restoreLive = () => {
+        // 获取直播数据并恢复
+        const restoreLiveStreamingMaterialLocalStorageStr = localStorage.getItem(liveStreamingMaterialLocalStorage)
+        if (restoreLiveStreamingMaterialLocalStorageStr) {
+            const restoreLiveStreamingMaterialLocalStorage = JSON.parse(restoreLiveStreamingMaterialLocalStorageStr) as LiveStreamingMaterial[]
+            console.log('============', restoreLiveStreamingMaterialLocalStorage)
 
-        // 恢复数据
-        liveStreamingMaterials.map((item: LiveStreamingMaterial) => {
-            genCanvas(item)
-        })
+            restoreLiveStreamingMaterialLocalStorage.map((liveStreamingMaterial: LiveStreamingMaterial) => {
+                genCanvas(liveStreamingMaterial).then((canvasData: GenCanvasData) => {
 
-        // 初始化用户摄像头/音频设备授权
-        initUserMedia()
+                    // 保存媒体类型，用于删除
+                    liveStreamingMaterial.canvasDom = canvasData?.canvasDom
+                    liveStreamingMaterial.scaleInfo = {}
+                    if (
+                        liveStreamingMaterial.type === MaterialTypeEnum.SCREEN ||
+                        liveStreamingMaterial.type === MaterialTypeEnum.AUDIO ||
+                        liveStreamingMaterial.type === MaterialTypeEnum.VIDEO
+                    ) {
+                        liveStreamingMaterial.videoEl = canvasData.videoEl!
+                        liveStreamingMaterial.stream = canvasData.videoStream!
+                    }
+                    setScaleInfo(liveStreamingMaterial, 1)
+                    // 设置数据
+                    setLiveStreamingMaterials([...liveStreamingMaterials, liveStreamingMaterial])
+                }).catch((err: Error) => {
+                    console.error(err)
+                })
+            })
+        }
     }
 
     // 生成canvas
@@ -708,6 +730,13 @@ const Live: React.FC = () => {
         }
     }, [liveStatus])
 
+    // 储存直播数据
+    useEffect(() => {
+        if (liveStreamingMaterials.length > 0) {
+            localStorage.setItem(liveStreamingMaterialLocalStorage, JSON.stringify(liveStreamingMaterials))
+        }
+    }, [liveStreamingMaterials])
+
     useEffect(() => {
         init()
     }, [])
@@ -718,6 +747,11 @@ const Live: React.FC = () => {
             renderFrame()
             // 改变大小
             changeCanvasStyle()
+
+            // 初始化用户摄像头/音频设备授权
+            initUserMedia()
+            // 从本地恢复用户直播
+            restoreLive()
         }
     }, [fabricCanvas])
 
@@ -812,30 +846,19 @@ const Live: React.FC = () => {
                             handleVolume: (id: number, currentVolume: number) => {
                                 const liveStreamingMaterial = liveStreamingMaterials.find(item => item.id === id)
                                 liveStreamingMaterial!.volume = currentVolume
-
-                                liveStreamingMaterial!.videoEl!.volume = currentVolume / 100
+                                // 存在本地播放需要同时减低省道
+                                if (liveStreamingMaterial?.videoEl) {
+                                    liveStreamingMaterial.videoEl.volume = currentVolume / 100
+                                }
 
                                 handleAudioMixedVideo()
-                                // const audioctx = new AudioContext();
-                                // // 加载音频资源
-                                // const audioSource = audioctx.createMediaStreamSource(liveStreamingMaterial!.stream!);
-
-                                // // 创建增益节点
-                                // const gainNode = audioctx.createGain()
-                                // // 连接音频源和增益节点
-                                // audioSource.connect(gainNode)
-
-                                // // 将增益节点连接到 AudioContext 的输出
-                                // gainNode.connect(audioctx.destination)
-
-                                // gainNode.gain.value = currentVolume / 100
                             }
                         }}>
                             <RightTool />
                         </LiveContext.Provider>
                     </div>
                 </Col>
-            </Row>
+            </Row >
         </>
 
     )
