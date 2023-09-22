@@ -74,7 +74,10 @@ const MateralModal: React.FC<{
         transitionTime?: number
 
         // 媒体地址
-        video?: File
+        video?: {
+            file: File,
+            fileList: UploadFile[]
+        }
 
         // 摄像头/麦克风ID
         deviceId?: string
@@ -138,7 +141,7 @@ const MateralModal: React.FC<{
 
     // 处理选择的直播素材
     const genMaterial = () => {
-        const length = liveStreamingMaterials!.length + 1
+        const length = liveStreamingMaterials ? liveStreamingMaterials.length + 1 : 1
         if (data) {
             switch (materialType) {
                 case MaterialTypeEnum.CAMERA:
@@ -588,7 +591,7 @@ const MateralModal: React.FC<{
                 if (data) {
                     type = 'update'
                 }
-                const length = liveStreamingMaterials!.length + 1
+                const length = liveStreamingMaterials ? liveStreamingMaterials.length + 1 : 1
                 let idVal: number = length
                 if (type === 'update') {
                     idVal = data!.id
@@ -705,6 +708,7 @@ const MateralModal: React.FC<{
                         }, type)
                         break
                     case MaterialTypeEnum.FOLDER:
+                        
                         handleLiveStreamingMaterials!({
                             id: idVal,
                             type: MaterialTypeEnum.FOLDER,

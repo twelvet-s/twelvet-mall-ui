@@ -35,7 +35,7 @@ const MateralList: React.FC = () => {
                 <h4 className={styles.ctnTitle}>素材列表</h4>
                 <div className={styles.ctnList}>
 
-                    {liveStreamingMaterials!.map((item: LiveStreamingMaterial) => (
+                    {liveStreamingMaterials?.map((item: LiveStreamingMaterial) => (
                         <div className={styles.ctnListItem} key={item.id}>
                             <div className={styles.ctnListItemLeft}>
                                 {

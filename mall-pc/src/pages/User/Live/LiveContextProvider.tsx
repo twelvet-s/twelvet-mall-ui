@@ -50,6 +50,8 @@ export type LiveStreamingMaterial = {
     }
     // 图片素材
     imageInfo?: {
+        // 文件数据
+        datas?: string[],
         // 图片地址
         picture: {
             file: File,
@@ -68,13 +70,15 @@ export type LiveStreamingMaterial = {
     videoInfo?: {
         // 媒体地址
         video: {
+            // 文件数据
+            data?: string,
             file: File,
             fileList: UploadFile[]
         }
     }
     // 素材位置
     rect: { top: number; left: number }
-    scaleInfo?: Record<number, { scaleX: number; scaleY: number }>
+    scaleInfo: Record<number, { scaleX: number; scaleY: number }>
 }
 
 export type LiveContextType = {
