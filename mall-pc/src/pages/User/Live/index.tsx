@@ -660,7 +660,7 @@ const Live: React.FC = () => {
         } else if (liveStatus === 2) { // 关闭直播
             closeLive()
         }
-    }, [liveStatus, startScreenSharing, closeLive])
+    }, [liveStatus])
 
     // 储存直播数据
     useEffect(() => {
@@ -796,9 +796,13 @@ const Live: React.FC = () => {
                         liveStreamingMaterial.videoEl = canvasData.videoEl!
                         liveStreamingMaterial.stream = canvasData.videoStream!
                     }
-                    // 设置缩放大小
-                    liveStreamingMaterial.canvasDom.scaleX = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleX
-                    liveStreamingMaterial.canvasDom.scaleY = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleY
+
+                    if (liveStreamingMaterial.canvasDom) {
+                        // 设置缩放大小
+                        liveStreamingMaterial.canvasDom.scaleX = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleX
+                        liveStreamingMaterial.canvasDom.scaleY = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleY
+                    }
+
                 }).catch((err: Error) => {
                     console.error(err)
                 })
