@@ -47,11 +47,11 @@ const AddMateral: React.FC = () => {
             icon: <VideoCameraOutlined className={styles.icons} />,
             title: '多媒体',
         },
-        {
-            type: MaterialTypeEnum.FOLDER,
-            icon: <FolderOpenOutlined className={styles.icons} />,
-            title: '相册',
-        }
+        // {
+        //     type: MaterialTypeEnum.FOLDER,
+        //     icon: <FolderOpenOutlined className={styles.icons} />,
+        //     title: '相册',
+        // }
     ]
 
     // 填写直播素材信息
