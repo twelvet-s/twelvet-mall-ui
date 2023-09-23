@@ -97,7 +97,7 @@ const Live: React.FC = () => {
     }
 
     // 删除直播素材，ID为0时全部删除
-    const handleDeleteLiveStreamingMaterial = (id: number) => {
+    const handleDeleteLiveStreamingMaterial = (id: string) => {
         const newLiveStreamingMaterials = liveStreamingMaterials!.filter(liveStreamingMaterial => {
             if (id === 0 || liveStreamingMaterial.id === id) {
                 // 关闭流，DOM
@@ -113,7 +113,7 @@ const Live: React.FC = () => {
     }
 
     // 修改canvas状态
-    const handleVisibleLiveStreamingMaterial = (id: number) => {
+    const handleVisibleLiveStreamingMaterial = (id: string) => {
         // 更新数据
         const newLiveStreamingMaterials = liveStreamingMaterials!.filter(liveStreamingMaterial => {
             if (liveStreamingMaterial.id === id) {

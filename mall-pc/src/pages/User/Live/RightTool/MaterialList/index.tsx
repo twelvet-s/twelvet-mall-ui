@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 
 import styles from './style.module.css'
-import { EyeOutlined, EditOutlined, DeleteOutlined, EyeInvisibleOutlined, SoundOutlined } from '@ant-design/icons'
+import { EyeOutlined, EditOutlined, DeleteOutlined, EyeInvisibleOutlined, SoundOutlined, AudioOutlined, AudioMutedOutlined } from '@ant-design/icons'
 import { Button, Popconfirm, Slider } from 'antd'
 import LiveContext, { LiveContextType, LiveStreamingMaterial } from '../../LiveContextProvider'
 import AddMaterial from './AddMaterial'
@@ -67,7 +67,7 @@ const MateralList: React.FC = () => {
                                             description={
                                                 <Slider
                                                     style={{ width: '100px' }}
-                                                    min={1}
+                                                    min={0}
                                                     max={100}
                                                     defaultValue={item.volume ? item.volume : 100}
                                                     onAfterChange={val => handleVolume!(item.id, val)}
@@ -78,8 +78,13 @@ const MateralList: React.FC = () => {
                                             okButtonProps={{ style: { display: 'none' } }}
                                             cancelButtonProps={{ style: { display: 'none' } }}
                                         >
-                                            <SoundOutlined onClick={() => handleVolume!(item.id, 0)} className={`${styles.marginRight10} ${styles.cursorPointer}`} />
+                                            {
+                                                item.volume! !== 0 ?
+                                                    <AudioOutlined onClick={() => handleVolume!(item.id, 0)} className={`${styles.marginRight10} ${styles.cursorPointer}`} /> :
+                                                    <AudioMutedOutlined onClick={() => handleVolume!(item.id, 100)} className={`${styles.marginRight10} ${styles.cursorPointer}`} />
+                                            }
                                         </Popconfirm>
+
                                     )
                                 }
                                 <EditOutlined className={`${styles.marginRight10} ${styles.cursorPointer}`} onClick={() => {

@@ -323,7 +323,7 @@ const MateralModal: React.FC<{
                         beforeUpload={() => false}
                         maxCount={1}
                     >
-                        <Button icon={<UploadOutlined />}>选择文件</Button>
+                        <Button disabled={data?.title ? true : false} icon={<UploadOutlined />}>选择文件</Button>
                     </Upload>
                 </Form.Item>
 
@@ -334,6 +334,7 @@ const MateralModal: React.FC<{
                     initialValue={100}
                 >
                     <Slider
+                        disabled={data?.title ? true : false}
                         min={1}
                         max={100}
                     />
@@ -504,7 +505,7 @@ const MateralModal: React.FC<{
                         beforeUpload={() => false}
                         maxCount={1}
                     >
-                        <Button icon={<UploadOutlined />}>选择文件</Button>
+                        <Button disabled={data?.title ? true : false} icon={<UploadOutlined />}>选择文件</Button>
                     </Upload>
                 </Form.Item>
             </>
@@ -536,7 +537,7 @@ const MateralModal: React.FC<{
                         multiple={true}
                         beforeUpload={() => false}
                     >
-                        <Button icon={<UploadOutlined />}>选择文件</Button>
+                        <Button disabled={data?.title ? true : false} icon={<UploadOutlined />}>选择文件</Button>
                     </Upload>
                 </Form.Item>
 
@@ -565,6 +566,7 @@ const MateralModal: React.FC<{
                     initialValue={3000}
                 >
                     <Slider
+                        disabled={data?.title ? true : false}
                         min={100}
                         max={10000}
                     />
@@ -577,6 +579,7 @@ const MateralModal: React.FC<{
                     initialValue={1000}
                 >
                     <Slider
+                        disabled={data?.title ? true : false}
                         min={100}
                         max={10000}
                     />
@@ -712,7 +715,7 @@ const MateralModal: React.FC<{
                         }, type)
                         break
                     case MaterialTypeEnum.FOLDER:
-                        
+
                         handleLiveStreamingMaterials!({
                             id: idVal,
                             type: MaterialTypeEnum.FOLDER,
