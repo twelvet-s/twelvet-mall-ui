@@ -7,6 +7,7 @@ import { createVideo } from '../../../utils/videoUtils'
 import { fabric } from 'fabric'
 import LiveContext, { GenCanvasData, LiveStreamingMaterial } from './LiveContextProvider'
 import { MaterialTypeEnum } from './RightTool/MaterialList/AddMaterial/interface'
+import { readFile, saveFile } from '../../../utils/file'
 
 const Live: React.FC = () => {
 
@@ -84,6 +85,10 @@ const Live: React.FC = () => {
             const newLiveStreamingMaterials = liveStreamingMaterials!.filter(item => {
                 if (item.id === liveStreamingMaterial.id) {
                     item.title = liveStreamingMaterial.title
+                    if (item.type === MaterialTypeEnum.TEXT) {
+                        item.textInfo = liveStreamingMaterial.textInfo
+                        updateText(item)
+                    }
                 }
                 return item
             })
@@ -99,7 +104,7 @@ const Live: React.FC = () => {
                 fabricCanvas?.remove(liveStreamingMaterial.canvasDom!)
                 liveStreamingMaterial.videoEl?.remove()
                 liveStreamingMaterial?.stream?.getTracks().forEach(track => {
-                    track.stop();
+                    track.stop()
                 })
             }
             return id !== 0 && liveStreamingMaterial.id !== id
@@ -289,7 +294,8 @@ const Live: React.FC = () => {
             },
             body: JSON.stringify({
                 sdp: offer.sdp,
-                streamurl: '/live/livestream/1'
+                // /live/livestream/1 支持自定义
+                streamurl: '/live/livestream'
             }),
         }).then(res => {
             return res.json()
@@ -358,9 +364,20 @@ const Live: React.FC = () => {
     }
 
     // 添加图片
-    const addPicture = (data: LiveStreamingMaterial) => {
-        const imgEl = document.createElement('img');
-        imgEl.src = data.imageInfo!.datas![0]
+    const addPicture = async (data: LiveStreamingMaterial) => {
+        const imgEl = document.createElement('img')
+        const { code, file } = await readFile(data.imageInfo!.picture.file.uid)
+        if (code === 1 && file) {
+            imgEl.src = URL.createObjectURL(file)
+        } else {
+            return
+        }
+
+        await new Promise<boolean>((resolve) => {
+            imgEl.onload = () => {
+                resolve(true)
+            }
+        })
         const canvasDom = new fabric.Image(imgEl, {
             top: (data.rect?.top || 0) / window.devicePixelRatio,
             left: (data.rect?.left || 0) / window.devicePixelRatio,
@@ -420,27 +437,77 @@ const Live: React.FC = () => {
         return { canvasDom }
     }
 
+    // 修改文字
+    const updateText = (data: LiveStreamingMaterial) => {
+        // 描边
+        let stroke = {}
+        if (data.textInfo?.textStroke) {
+            stroke = {
+                strokeWidth: data.textInfo?.textStrokeWeight,
+                stroke: data.textInfo?.textStrokeColor
+            }
+        }
+
+        // 字体样式
+        let fontStyle = {}
+        if (data.textInfo?.fontStyle === 'italic') {
+            fontStyle = {
+                fontStyle: data.textInfo?.fontStyle
+            }
+        } else if (data.textInfo?.fontStyle === 'weight') {
+            fontStyle = {
+                fontWeight: 'bold'
+            }
+        } else if (data.textInfo?.fontStyle === 'italicAndWeight') {
+            fontStyle = {
+                fontStyle: 'italic',
+                fontWeight: 'bold'
+            }
+        }
+
+        const canvasDom = data.canvasDom!
+        canvasDom.setOptions({
+            text: data.textInfo?.text,
+            top: (data.rect?.top || 0) / window.devicePixelRatio,
+            left: (data.rect?.left || 0) / window.devicePixelRatio,
+            fill: data.textInfo?.color,
+            fontSize: data.textInfo?.fontSize,
+            fontFamily: data.textInfo?.fontFamily,
+            opacity: data.textInfo!.opacity / 100,
+            // 字体样式
+            ...fontStyle,
+            // 描边
+            ...stroke
+        })
+    }
+
     // 添加媒体
     const addVideo = async (data: LiveStreamingMaterial) => {
         // const url = URL.createObjectURL(data.videoInfo?.video.file)
         const videoEl = createVideo({ muted: false, appendChild: true })
-        videoEl.src = data.videoInfo!.video.data!
-        videoEl.muted = false
 
-        const videoRes: HTMLVideoElement = await new Promise<HTMLVideoElement>((resolve) => {
-            videoEl.onloadedmetadata = () => {
-                resolve(videoEl)
-            }
-        })
+        const { code, file } = await readFile(data.videoInfo!.video.file.uid)
+        if (code === 1 && file) {
+            videoEl.src = URL.createObjectURL(file)
 
-        const stream = videoRes.captureStream()
-        const { canvasDom, scale } = await autoCreateVideo({
-            stream,
-            rect: data.rect,
-            id: data.id,
-        })
+            videoEl.muted = false
 
-        return { canvasDom, videoEl, videoStream: stream }
+            await new Promise<boolean>((resolve) => {
+                videoEl.onloadedmetadata = () => {
+                    resolve(true)
+                }
+            })
+            const stream = videoEl.captureStream()
+            const { canvasDom, scale } = await autoCreateVideo({
+                stream,
+                rect: data.rect,
+                id: data.id,
+            })
+
+            return { canvasDom, videoEl, videoStream: stream }
+        } else {
+            return
+        }
     }
 
     // 添加相册
@@ -495,7 +562,7 @@ const Live: React.FC = () => {
     // 处理移动记录坐标
     const handleMoving = ({ canvasDom, id, }: {
         canvasDom: fabric.Image | fabric.Text
-        id: number
+        id: string
     }) => {
         // 监控拖动canvas记录坐标
         canvasDom.on('mouseup', () => {
@@ -511,6 +578,20 @@ const Live: React.FC = () => {
                 localStorage.setItem(liveStreamingMaterialLocalStorage, JSON.stringify(restoreLiveStreamingMaterialLocalStorage))
             }
         })
+    }
+
+    const handleKeydown = ({ canvasDom, id, }: {
+        canvasDom: fabric.Image | fabric.Text
+        id: string
+    }) => {
+        // 监控拖动canvas记录坐标
+        // canvasDom.on('mouse:over', () => {
+        //     canvasDom.wrapperEl.tabIndex = 1000; // 设置画布接收键盘事件的焦点
+        //     canvasDom.wrapperEl.on('keydown', e => {
+        //         console.log(e.key)
+        //     })
+        // })
+
     }
 
 
@@ -533,7 +614,7 @@ const Live: React.FC = () => {
     const handleScaling = (
         { canvasDom, id }: {
             canvasDom: fabric.Image | fabric.Text
-            id: number
+            id: string
         }) => {
         canvasDom.on('scaling', () => {
             const restoreLiveStreamingMaterialLocalStorageStr = localStorage.getItem(liveStreamingMaterialLocalStorage)
@@ -583,7 +664,7 @@ const Live: React.FC = () => {
         muted,
     }: {
         stream: MediaStream;
-        id: number;
+        id: string;
         rect?: { left: number; top: number };
         muted?: boolean;
     }) => {
@@ -674,36 +755,54 @@ const Live: React.FC = () => {
         if (
             data.type === MaterialTypeEnum.VIDEO
         ) {
-            if (!data.videoInfo?.video.data) {
-                await new Promise<boolean>((resolve) => {
-                    const reader = new FileReader();
-                    reader.addEventListener(
-                        'load',
-                        () => {
-                            data.videoInfo!.video.data = reader.result as string
-                            resolve(true)
-                        },
-                        false
-                    )
-                    reader.readAsDataURL(data.videoInfo!.video.file)
-                })
+            if (!data.videoInfo?.video.saveOk) {
+                // await new Promise<boolean>((resolve) => {
+                //     const reader = new FileReader();
+                //     reader.addEventListener(
+                //         'load',
+                //         () => {
+                //             // 将文件内容转换为Blob对象
+                //             const blob = new Blob([reader.result as string])
+                //             // 创建Blob URL
+                //             const url = URL.createObjectURL(blob)
+                //             data.videoInfo!.video.data = url
+                //             resolve(true)
+                //         },
+                //         false
+                //     )
+                //     reader.readAsDataURL(data.videoInfo!.video.file)
+                // })
+                //data.videoInfo!.video.data = URL.createObjectURL(data.videoInfo!.video.file)
+                // console.log(data.videoInfo!.video.fileList[0].uid)
+                const { code } = await saveFile({ file: data.videoInfo!.video.file, fileName: data.videoInfo!.video.file.uid })
+                if (code !== 1) {
+                    console.error('写入文件失败')
+                    return
+                } else {
+                    data.videoInfo!.video.saveOk = true
+                }
             }
-        } else if (
-            data.type === MaterialTypeEnum.PICTURE
-        ) {
-            if (!data.imageInfo?.datas) {
-                await new Promise<boolean>((resolve) => {
-                    const reader = new FileReader();
-                    reader.addEventListener(
-                        'load',
-                        () => {
-                            data.imageInfo!.datas = [reader.result as string]
-                            resolve(true)
-                        },
-                        false
-                    )
-                    reader.readAsDataURL(data.imageInfo!.picture.file)
-                })
+        } else if (data.type === MaterialTypeEnum.PICTURE) {
+            if (!data.imageInfo!.saveOk) {
+                // await new Promise<boolean>((resolve) => {
+                //     const reader = new FileReader();
+                //     reader.addEventListener(
+                //         'load',
+                //         () => {
+                //             data.imageInfo!.datas = [reader.result as string]
+                //             resolve(true)
+                //         },
+                //         false
+                //     )
+                //     reader.readAsDataURL(data.imageInfo!.picture.file)
+                // })
+                const { code } = await saveFile({ file: data.imageInfo!.picture.file, fileName: data.imageInfo!.picture.file.uid })
+                if (code !== 1) {
+                    console.error('写入文件失败')
+                    return
+                } else {
+                    data.imageInfo!.saveOk = true
+                }
             }
         }
 
@@ -719,7 +818,7 @@ const Live: React.FC = () => {
                 canvasData = await addScreen(data)
                 break
             case MaterialTypeEnum.PICTURE:
-                canvasData = addPicture(data)
+                canvasData = await addPicture(data)
                 break
             case MaterialTypeEnum.TEXT:
                 canvasData = addText(data)
@@ -733,7 +832,10 @@ const Live: React.FC = () => {
             default:
                 throw new Error('类型错误')
         }
+
+        // 增加监听，控制显示
         if (canvasData.canvasDom) {
+            handleKeydown({ canvasDom: canvasData.canvasDom, id: data.id })
             handleMoving({ canvasDom: canvasData.canvasDom, id: data.id })
 
             handleScaling({ canvasDom: canvasData.canvasDom, id: data.id })
@@ -796,13 +898,9 @@ const Live: React.FC = () => {
                         liveStreamingMaterial.videoEl = canvasData.videoEl!
                         liveStreamingMaterial.stream = canvasData.videoStream!
                     }
-
-                    if (liveStreamingMaterial.canvasDom) {
-                        // 设置缩放大小
-                        liveStreamingMaterial.canvasDom.scaleX = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleX
-                        liveStreamingMaterial.canvasDom.scaleY = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleY
-                    }
-
+                    // 设置缩放大小
+                    liveStreamingMaterial.canvasDom.scaleX = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleX
+                    liveStreamingMaterial.canvasDom.scaleY = liveStreamingMaterial.scaleInfo[window.devicePixelRatio]?.scaleY
                 }).catch((err: Error) => {
                     console.error(err)
                 })
@@ -949,7 +1047,7 @@ const Live: React.FC = () => {
                             handleDeleteLiveStreamingMaterial,
                             handleVisibleLiveStreamingMaterial,
                             // 处理音量
-                            handleVolume: (id: number, currentVolume: number) => {
+                            handleVolume: (id: string, currentVolume: number) => {
                                 const newLiveStreamingMaterials = liveStreamingMaterials!.filter(liveStreamingMaterial => {
                                     if (liveStreamingMaterial.id === id) {
                                         liveStreamingMaterial.volume = currentVolume

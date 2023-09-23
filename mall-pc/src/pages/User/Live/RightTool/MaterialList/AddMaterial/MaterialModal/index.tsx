@@ -4,6 +4,7 @@ import { MaterialTypeEnum } from './../interface'
 import LiveContext, { LiveContextType, LiveStreamingMaterial } from '../../../../LiveContextProvider'
 import { UploadOutlined } from '@ant-design/icons'
 import { Color } from 'antd/lib/color-picker'
+import { generateUUID } from '../../../../../../../utils/string'
 
 
 // 添加素材
@@ -172,7 +173,8 @@ const MateralModal: React.FC<{
                 case MaterialTypeEnum.TEXT:
                     form.setFieldsValue({
                         ...data.textInfo,
-                        title: data.title
+                        title: data.title,
+                        textStroke: [data.textInfo!.textStroke]
                     })
                     return textMaterial()
                 case MaterialTypeEnum.VIDEO:
@@ -592,7 +594,7 @@ const MateralModal: React.FC<{
                     type = 'update'
                 }
                 const length = liveStreamingMaterials ? liveStreamingMaterials.length + 1 : 1
-                let idVal: number = length
+                let idVal: string = generateUUID()
                 if (type === 'update') {
                     idVal = data!.id
                 }
@@ -646,7 +648,8 @@ const MateralModal: React.FC<{
                             },
                             title: fields.title,
                             imageInfo: {
-                                // 图片地址
+                                saveOk: false,
+                                // 图片信息
                                 picture: fields.picture!,
                                 // 不透明度
                                 opacity: fields.opacity!,
@@ -702,6 +705,7 @@ const MateralModal: React.FC<{
                             },
                             title: fields.title,
                             videoInfo: {
+                                saveOk: false,
                                 // 媒体地址
                                 video: fields.video!
                             }
@@ -719,6 +723,7 @@ const MateralModal: React.FC<{
                             },
                             title: fields.title,
                             imageInfo: {
+                                saveOk: false,
                                 // 图片地址
                                 picture: fields.picture!,
                                 // 不透明度

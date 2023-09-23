@@ -3,14 +3,14 @@ import React from 'react'
 
 
 export interface GenCanvasData {
-    canvasDom: fabric.Image | fabric.Text;
+    canvasDom?: fabric.Image | fabric.Text;
     videoEl?: HTMLVideoElement;
     videoStream?: MediaStream;
 }
 
 export type LiveStreamingMaterial = {
     // ID
-    id: number
+    id: string
     // 摄像头/麦克风ID
     deviceId?: string
     // 素材类型
@@ -50,11 +50,11 @@ export type LiveStreamingMaterial = {
     }
     // 图片素材
     imageInfo?: {
-        // 文件数据
-        datas?: string[],
+        // 是否已保存
+        saveOk: boolean,
         // 图片地址
         picture: {
-            file: File,
+            file: UploadFile,
             fileList: UploadFile[]
         },
         // 不透明度
@@ -70,9 +70,9 @@ export type LiveStreamingMaterial = {
     videoInfo?: {
         // 媒体地址
         video: {
-            // 文件数据
-            data?: string,
-            file: File,
+            // 是否已保存
+            saveOk: boolean,
+            file: UploadFile,
             fileList: UploadFile[]
         }
     }
@@ -86,15 +86,15 @@ export type LiveContextType = {
     // 增加素材
     handleLiveStreamingMaterials?: (liveStreamingMaterials: LiveStreamingMaterial, type: 'update' | 'add') => void
     // 删除素材
-    handleDeleteLiveStreamingMaterial?: (id: number) => void
+    handleDeleteLiveStreamingMaterial?: (id: string) => void
     // 修改显示状态
-    handleVisibleLiveStreamingMaterial?: (id: number) => void
+    handleVisibleLiveStreamingMaterial?: (id: string) => void
     // 处理分辨率
     handleResolutionRatio?: (currentRatio: number) => void
     // 处理码率
     handleBitrate?: (currentBitrate: number) => void
     // 处理音频声音大小
-    handleVolume?: (id: number, currentVolume: number) => void
+    handleVolume?: (id: string, currentVolume: number) => void
 }
 
 const LiveContext = React.createContext<LiveContextType | undefined>(undefined)

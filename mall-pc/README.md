@@ -10,6 +10,10 @@
 
 这是基于[twelvet](https://github.com/twelvet-s/twelvet)微服务脚手架的秒杀商城系统的 React UI
 
+直播可直接
+启动mall-pc操作前端体验，无需服务器
+需要直播自行下载srs启动开播即可，只支持本地
+
 ## TwelveT 微服务交流群
 
 QQ 群： [![加入QQ群](https://img.shields.io/badge/985830229-blue.svg)](https://jq.qq.com/?_wv=1027&k=cznM6Q00) 点击按钮入群。
