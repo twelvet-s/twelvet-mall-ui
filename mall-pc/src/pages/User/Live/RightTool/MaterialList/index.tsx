@@ -66,10 +66,10 @@ const MateralList: React.FC = () => {
                                             icon={null}
                                             description={
                                                 <Slider
-                                                    style={{ width: '100px'}}
+                                                    style={{ width: '100px' }}
                                                     min={1}
                                                     max={100}
-                                                    defaultValue={100}
+                                                    defaultValue={item.volume ? item.volume : 100}
                                                     onAfterChange={val => handleVolume!(item.id, val)}
                                                 />
                                             }
