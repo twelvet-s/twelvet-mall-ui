@@ -12,7 +12,7 @@
 
 后端源码：https://github.com/twelvet-projects/twelvet-mall
 
-前端源码：https://github.com/twelvet-projects/twelvet-mall-ui
+前端源码：https://github.com/twelvet-s/twelvet-mall-ui
 
 ## TwelveT 微服务交流群
 
