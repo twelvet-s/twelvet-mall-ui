@@ -17,6 +17,9 @@ const Live = lazy(() => import('../pages/Live'))
 // 聊天室
 const Chat = lazy(() => import('../pages/Chat'))
 
+// 断点续传
+const ResumeFromBreakpoint = lazy(() => import('../pages/Upload/ResumeFromBreakpoint'))
+
 const Test = lazy(() => import('../pages/Test.tsx'))
 
 const NotFound = lazy(() => import('../pages/Error/404.tsx'))
@@ -60,6 +63,11 @@ const routes: RouteObject[] = [
             {
                 path: '/goods/detail/:goodsId',
                 element: lazyLoad(<GoodsDetail />),
+            },
+            // 文件上传
+            {
+                path: '/upload/resume-from-breakpoint',
+                element: lazyLoad(<ResumeFromBreakpoint />),
             },
             {
                 path: '*',

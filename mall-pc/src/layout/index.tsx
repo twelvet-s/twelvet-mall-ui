@@ -40,6 +40,8 @@ const Layout: React.FC = () => {
                         }
                         else if (e.key === 'userLive') {
                             navigate('/user/live')
+                        } else if (e.key === 'ResumeFromBreakpoint') {
+                            navigate('/upload/resume-from-breakpoint')
                         }
                     }}
                     items={[
@@ -54,6 +56,10 @@ const Layout: React.FC = () => {
                         {
                             key: 'userLive',
                             label: `发起直播`,
+                        },
+                        {
+                            key: 'ResumeFromBreakpoint',
+                            label: `断点续传`,
                         },
                     ]}
                 />
@@ -76,7 +82,7 @@ const Layout: React.FC = () => {
             >
                 <FloatButton href='/live' target='_blank' icon={<VideoCameraOutlined />} tooltip='直播间' />
                 <FloatButton href='/chat' target='_blank' icon={<TeamOutlined />} tooltip='聊天室' />
-            
+
             </FloatButton.Group>
         </AntdLayout>
     )
